@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>王如恩的《高级网页设计》课堂实践</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .card li {
+            margin: 10px 0;
+        }
+
+        .card a {
+            display: block;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .card a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(10px);
+        }
+
+        .card a::before {
+            content: "→ ";
+            margin-right: 10px;
+        }
+
+        .prompt-section {
+            background: rgba(255,255,255,0.95);
+        }
+
+        .prompt-section pre {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            border-left: 4px solid #764ba2;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #28a745;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .status-pending {
+            background: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>王如恩的《高级网页设计》</h1>
+            <p>课堂实践目录</p>
+        </header>
+
+        <div class="card">
+            <h2>📚 课堂模块</h2>
+            <ul>
+                <li>
+                    <a href="./Flex复习.html">Flex复习<span class="status-badge">已完成</span></a>
+                </li>
+                <li>
+                    <a href="./字体图标.html">字体图标<span class="status-badge">已完成</span></a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" style="opacity: 0.5; cursor: not-allowed;">其余模块<span class="status-badge status-pending">后续增加</span></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card prompt-section">
+            <h2>📋 创建提示词</h2>
+            <pre>创建一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用cdn，新页面名称为index.html，主题为王如恩的《高级网页设计》课堂实践，美化页面，课堂目录中包含flex复习、字体图标、其余模块后续在增加。页面中包括本提示词。</pre>
+        </div>
+
+        <footer>
+            <p>© 2026 王如恩 | 高级网页设计课堂实践</p>
+        </footer>
+    </div>
+</body>
+</html>
