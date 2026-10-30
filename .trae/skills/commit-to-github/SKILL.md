@@ -21,7 +21,8 @@ description: 将本仓库暂存、commit 并 push 到 GitHub 远程 github（htt
 4. 确保 GitHub 远程存在：
    - `git remote get-url github` 成功则不改；
    - 失败则 `git remote add github https://github.com/wangruen/wangruen.git`。
-5. 推送：`git push -u github master`。
-   - 若 HTTPS 认证失败或卡在凭据输入：SSH 公钥已配置，改用 SSH —— `git remote set-url github git@github.com:wangruen/wangruen.git` 后重试。
+5. 推送：`git push -u github master`。远程统一用 SSH 形式 `git@github.com:wangruen/wangruen.git`（SSH 公钥已配置在 GitHub 账号 `wangruen` 上）。
+   - 本机网络事实：HTTPS 直连 github.com 常被 Connection reset；SSH 22 端口可能 Connection refused。`~/.ssh/config` 已配置 `Host github.com → ssh.github.com:443`，SSH 推送走 443 通道即可，无需额外参数。
+   - 若报 Permission denied (publickey)：先用 `ssh -T git@github.com` 验证；出现 `Hi wangruen!` 即正常，否则提示用户到 https://github.com/settings/keys 检查（必须是 Authentication Key，且加在 wangruen 账号上）。
    - 若被拒绝（non-fast-forward）：不要 force push；`git fetch github` 后把差异报告给用户，等用户决定 rebase/merge。
 6. 完成后报告：提交哈希、推送的分支与远程 URL。不要顺带 push gitee，除非用户明确要求。
