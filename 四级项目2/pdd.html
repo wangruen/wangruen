@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>拼多多 - 底部导航（图像解决方案实验）</title>
+<link rel="stylesheet" href="./pdd.css">
+<script src="./download (1)/font_5245311_1jm1dgnruk3/iconfont.js"></script>
+</head>
+<body>
+
+<!-- SVG symbol 雪碧图（对应 iconfont 项目里的图标） -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- 首页：房子 -->
+  <symbol id="icon-home" viewBox="0 0 1024 1024">
+    <path d="M512 128L128 448v448h256V640h256v256h256V448z"/>
+  </symbol>
+  <!-- 多多视频：方框+播放三角 -->
+  <symbol id="icon-video" viewBox="0 0 1024 1024">
+    <path d="M192 192h640c35.3 0 64 28.7 64 64v512c0 35.3-28.7 64-64 64H192c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64zm96 160v320l256-160z"/>
+  </symbol>
+  <!-- 拼多多 logo：红色心形拼图（简化版） -->
+  <symbol id="icon-pdd" viewBox="0 0 1024 1024">
+    <path d="M512 896C256 720 128 560 128 384c0-120 96-200 192-200 64 0 128 32 192 96 64-64 128-96 192-96 96 0 192 80 192 200 0 176-128 336-384 512z M400 320l-80 80 80 80 80-80z M624 320l-80 80 80 80 80-80z M512 480l-80 80 80 80 80-80z"/>
+  </symbol>
+  <!-- 聊天：气泡+三点 -->
+  <symbol id="icon-chat" viewBox="0 0 1024 1024">
+    <path d="M512 160C288 160 128 304 128 480c0 104 56 196 144 256l-24 128 160-88c34 6 70 8 104 8 224 0 384-144 384-320S736 160 512 160z M320 448a40 40 0 110 80 40 40 40 0 010-80z M488 448a40 40 0 110 80 40 40 0 010-80z M656 448a40 40 0 110 80 40 40 0 010-80z"/>
+  </symbol>
+  <!-- 个人中心：圆脸 -->
+  <symbol id="icon-mine" viewBox="0 0 1024 1024">
+    <path d="M512 128c-212 0-384 172-384 384s172 384 384 384 384-172 384-384-172-384-384-384z M512 192c176 0 320 144 320 320S688 832 512 832 192 688 192 512s144-320 320-320z M384 416a40 40 0 110 80 40 40 0 010-80z M560 416a40 40 0 110 80 40 40 0 010-80z"/>
+  </symbol>
+</svg>
+
+<div class="phone">
+  <!-- 顶部 -->
+  <div class="header">
+    <div class="search-bar">
+      <svg viewBox="0 0 1024 1024"><path d="M448 256a192 192 0 100 384 192 192 0 000-384zm320 192a320 320 0 11-640 0 320 320 0 01640 0z"/></svg>
+      搜索“百亿补贴”
+    </div>
+  </div>
+
+  <!-- 轮播 -->
+  <div class="banner">双十一狂欢节 · 百亿补贴</div>
+
+  <!-- 金刚区 -->
+  <div class="cates">
+    <div class="cate"><div class="cate-icon" style="background:#e02e24">秒</div>限时秒杀</div>
+    <div class="cate"><div class="cate-icon" style="background:#ff9500">补</div>百亿补贴</div>
+    <div class="cate"><div class="cate-icon" style="background:#3ba776">拼</div>多多买菜</div>
+    <div class="cate"><div class="cate-icon" style="background:#4e6ef2">充</div>充值中心</div>
+    <div class="cate"><div class="cate-icon" style="background:#9b59b6">领</div>现金大转盘</div>
+  </div>
+
+  <!-- 商品列表 -->
+  <div class="section-title">
+    <h2>百亿补贴</h2>
+    <span>查看更多 &gt;</span>
+  </div>
+  <div class="goods">
+    <div class="card">
+      <div class="card-img">商品图片</div>
+      <div class="card-body">
+        <div class="tag">品牌</div>
+        <div class="name">正品蓝牙耳机 无线降噪 超长续航</div>
+        <div class="price">99.9</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img">商品图片</div>
+      <div class="card-body">
+        <div class="tag">补贴</div>
+        <div class="name">家用纸巾整箱装 30包 加厚抽纸</div>
+        <div class="price">29.9</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 底部导航栏 ========== -->
+  <nav class="tabbar">
+    <!-- 1. 首页 -->
+    <div class="tab active" data-tab="home">
+      <svg><use href="#icon-52shouye-1"/></svg>
+      <span class="label">首页</span>
+    </div>
+    <!-- 2. 多多视频 -->
+    <div class="tab" data-tab="video">
+      <svg><use href="#icon-duoduoshipin"/></svg>
+      <span class="label">多多视频</span>
+    </div>
+    <!-- 3. 拼多多 Logo（中间凸起） -->
+    <div class="tab center" data-tab="pdd">
+      <div class="logo-wrap">
+        <svg><use href="#icon-pinduoduo"/></svg>
+      </div>
+      <span class="label">多多拼</span>
+    </div>
+    <!-- 4. 聊天 -->
+    <div class="tab" data-tab="chat">
+      <svg><use href="#icon-pinduoduokefu"/></svg>
+      <span class="badge">3</span>
+      <span class="label">聊天</span>
+    </div>
+    <!-- 5. 个人中心 -->
+    <div class="tab" data-tab="mine">
+      <svg><use href="#icon-gerenzhongxin-zhihui"/></svg>
+      <span class="label">个人中心</span>
+    </div>
+  </nav>
+</div>
+
+<script>
+  // 底部导航切换高亮（交互演示）
+  document.querySelectorAll('.tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

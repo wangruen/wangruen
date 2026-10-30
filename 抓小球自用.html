@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抓小球 | 持续移动版</title>
+     <style>
+        body{
+            background: #f0f8ff;
+            overflow: hidden;
+            font-size: 24px;
+            margin:0;
+        }
+        #info{
+            padding: 16px;
+            background: #222;
+            color: #fff;
+        }
+        .ball{
+            width: 50px;
+            height: 50px;
+            background: red;
+            border-radius: 50%;
+            position: absolute;
+            transition: all 0.3s; /* 平滑移动过渡 */
+        }
+    </style>
+</head>
+<body>
+    <div id="info">当前分数：<span id="score">0</span></div>
+    <div class="ball" id="ball"></div>
+    
+    <script>
+        const game = {
+            score: 0,
+            ballDom: document.getElementById("ball"),
+            width: 50,
+            height: 50,
+            timer: null, // 存放移动定时器
+            moveSpeed: 800, // 小球多久换一次位置，单位ms，越小移动越快
+            stopTime: 1000  // 点击小球后暂停多久(ms)，1000=1秒
+        };
+
+        function moveBall(){
+            const maxX = window.innerWidth - game.width;
+            const maxY = window.innerHeight - game.height;
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            game.ballDom.style.top = randomY + "px";
+            game.ballDom.style.left = randomX + "px";
+        }
+
+        function updateScore(){
+            document.getElementById("score").innerText = game.score;
+        }
+
+        // 开启自动移动
+        function startMove(){
+            // 先清除旧定时器，防止多个定时器叠加
+            clearInterval(game.timer);
+            game.timer = setInterval(moveBall, game.moveSpeed);
+        }
+
+        // 停止移动
+        function stopMove(){
+            clearInterval(game.timer);
+        }
+
+        game.ballDom.addEventListener("click", function(e){
+            e.stopPropagation();
+            game.score += 1; // ✅ 点中小球 +1分
+            updateScore();
+            stopMove(); // 点击后停止小球移动
+            moveBall(); // 立刻跳到新位置
+            // 暂停一段时间后重新开始移动
+            setTimeout(()=>{
+                startMove();
+            }, game.stopTime);
+        });
+
+        document.body.addEventListener("click", function(e){
+            if(e.target !== game.ballDom){
+                game.score -= 1; // ✅ 点击空白区域 -1分
+                updateScore();
+            }
+        });
+
+        // 页面初始化，启动小球自动移动
+        moveBall();
+        startMove();
+    </script>
+</body>
+</html>
+

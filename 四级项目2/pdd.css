@@ -1,0 +1,175 @@
+/* ========== 全局重置 ========== */
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+  background: #f0f0f0;
+  min-height: 100vh;
+}
+
+/* 手机容器：居中、限宽，模拟手机屏幕 */
+.phone {
+  max-width: 420px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #f5f5f5;
+  position: relative;
+  padding-bottom: 70px; /* 给底部导航留位 */
+}
+
+/* ========== 顶部搜索栏 ========== */
+.header {
+  background: #e02e24;
+  padding: 10px 12px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.search-bar {
+  background: #fff;
+  border-radius: 20px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  color: #999;
+  font-size: 14px;
+}
+.search-bar svg { width: 16px; height: 16px; margin-right: 8px; fill: #999; }
+
+/* ========== 轮播图 ========== */
+.banner {
+  margin: 10px 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ff6b4a, #e02e24);
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* ========== 金刚区图标 ========== */
+.cates {
+  background: #fff;
+  margin: 0 12px 10px;
+  border-radius: 8px;
+  padding: 14px 0;
+  display: flex;
+  justify-content: space-around;
+}
+.cate {
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+}
+.cate-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  margin: 0 auto 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* ========== 百亿补贴标题 ========== */
+.section-title {
+  margin: 14px 12px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-title h2 { font-size: 17px; color: #e02e24; }
+.section-title span { font-size: 12px; color: #999; }
+
+/* ========== 商品网格 ========== */
+.goods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 12px;
+}
+.card {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.card-img {
+  height: 140px;
+  background: #ffe8e6;
+  display: flex; align-items: center; justify-content: center;
+  color: #e02e24; font-size: 13px;
+}
+.card-body { padding: 8px 10px 12px; }
+.card-body .tag {
+  display: inline-block;
+  background: #e02e24; color: #fff;
+  font-size: 10px; padding: 1px 4px; border-radius: 2px;
+  margin-bottom: 4px;
+}
+.card-body .name { font-size: 13px; color: #333; line-height: 1.4; height: 36px; overflow: hidden; }
+.card-body .price { margin-top: 6px; color: #e02e24; font-size: 16px; font-weight: bold; }
+.card-body .price::before { content: "¥"; font-size: 12px; }
+
+/* ========== 底部导航（核心实验部分） ========== */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  height: 60px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom); /* iOS 安全区 */
+}
+.tab {
+  flex: 1;               /* 自适应宽度：五等分 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  cursor: pointer;
+  color: #666;
+  font-size: 11px;
+  position: relative;
+  transition: color .2s;
+}
+.tab svg {
+  width: 24px; height: 24px;
+  fill: currentColor;    /* 颜色跟随文字，CSS 可改 */
+  margin-bottom: 2px;
+}
+.tab.active { color: #e02e24; }
+
+/* 中间 logo 凸起按钮（拼多多标志性设计） */
+.tab.center { position: relative; }
+.tab.center .logo-wrap {
+  width: 46px; height: 46px;
+  margin-top: -22px;    /* 向上突出 */
+  display: flex; align-items: center; justify-content: center;
+}
+.tab.center svg { width: 46px; height: 46px; margin-bottom: 0; }
+.tab.center .label { margin-top: 0; }
+
+/* 未读消息红点 */
+.badge {
+  position: absolute;
+  top: 6px; left: calc(50% + 6px);
+  background: #e02e24; color: #fff;
+  font-size: 9px;
+  min-width: 15px; height: 15px;
+  line-height: 15px;
+  text-align: center;
+  border-radius: 8px;
+  padding: 0 3px;
+}

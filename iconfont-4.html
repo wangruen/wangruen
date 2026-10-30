@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MOBILE NAV · SVG 版</title>
+    <style>
+        :root {
+            --wr-bg:        #0f0f12;
+            --wr-surface:   #1a1a20;
+            --wr-ink:       #f4f1ea;
+            --wr-ink-soft:  #b8b4aa;
+            --wr-gold:      #c9a96a;
+            --wr-gold-hi:   #e8d4a0;
+            --wr-line:      rgba(244, 241, 234, 0.08);
+            --wr-red:       #ff4d4f;
+            --wr-nav-h:     64px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            background: var(--wr-bg);
+            color: var(--wr-ink);
+            font-family: "Inter", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .wr_page {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 0 20px calc(var(--wr-nav-h) + 32px);
+            background:
+                radial-gradient(120% 40% at 50% 0%, rgba(201,169,106,0.10), transparent 70%),
+                var(--wr-bg);
+        }
+
+        .wr_topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 0;
+        }
+
+        .wr_home_link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid var(--wr-line);
+            border-radius: 999px;
+            color: var(--wr-gold);
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: border-color .3s, color .3s;
+        }
+        .wr_home_link:hover { border-color: var(--wr-gold); color: var(--wr-gold-hi); }
+
+        .wr_hero { padding: 28px 0 20px; text-align: center; }
+        .wr_hero_tag {
+            display: inline-block;
+            padding: 5px 14px;
+            border: 1px solid var(--wr-line);
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--wr-gold);
+            margin-bottom: 18px;
+        }
+        .wr_hero h1 {
+            font-family: "Playfair Display", Georgia, "Songti SC", "STSong", serif;
+            font-size: 32px;
+            font-weight: 500;
+            line-height: 1.15;
+        }
+        .wr_hero h1 em { font-style: italic; color: var(--wr-gold-hi); }
+        .wr_hero p { margin-top: 10px; font-size: 13px; color: var(--wr-ink-soft); }
+
+        .wr_note {
+            margin-top: 20px;
+            padding: 18px 20px;
+            background: var(--wr-surface);
+            border: 1px solid var(--wr-line);
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--wr-ink-soft);
+        }
+        .wr_note b { color: var(--wr-gold-hi); font-weight: 500; }
+        .wr_note ul { margin: 8px 0 0 18px; }
+        .wr_note li { margin: 4px 0; }
+
+        .wr_feedback {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--wr-gold);
+            min-height: 20px;
+            font-family: ui-monospace, Consolas, monospace;
+        }
+
+        /* ========== 固定底部导航 · 自适应宽度 ========== */
+        .wr_bottom_nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            height: var(--wr-nav-h);
+            display: flex;
+            background: rgba(26, 26, 32, 0.88);
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            border-top: 1px solid var(--wr-line);
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+
+        .wr_nav_item {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--wr-ink-soft);
+            transition: color .3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* SVG 图标：由 iconfont.js 注入的 symbol 引用渲染 */
+        .wr_svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;      /* 跟随文字颜色 */
+            overflow: hidden;
+            vertical-align: -0.15em;
+            transition: transform .35s cubic-bezier(.2,.7,.2,1);
+        }
+
+        .wr_nav_item .wr_label {
+            font-size: 10px;
+            letter-spacing: 0.08em;
+        }
+
+        .wr_nav_item.wr_active { color: var(--wr-gold-hi); }
+        .wr_nav_item.wr_active .wr_svg { transform: translateY(-2px) scale(1.08); }
+        .wr_nav_item:active .wr_svg { transform: scale(0.9); }
+
+        .wr_nav_item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 28px;
+            height: 2px;
+            border-radius: 2px;
+            background: var(--wr-gold);
+            transition: transform .3s ease;
+        }
+        .wr_nav_item.wr_active::before { transform: translateX(-50%) scaleX(1); }
+
+        /* 右上角数字徽章 */
+        .wr_badge {
+            position: absolute;
+            top: 8px;
+            left: calc(50% + 4px);
+            min-width: 16px;
+            height: 16px;
+            padding: 0 4px;
+            border-radius: 999px;
+            background: var(--wr-red);
+            color: #fff;
+            font-size: 10px;
+            line-height: 16px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 0 0 2px var(--wr-bg);
+        }
+
+        /* 右上角红点 */
+        .wr_dot {
+            position: absolute;
+            top: 10px;
+            left: calc(50% + 8px);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--wr-red);
+            box-shadow: 0 0 0 2px var(--wr-bg);
+            animation: wr_pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes wr_pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50%      { transform: scale(1.35); opacity: .75; }
+        }
+
+        .wr_footer {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--wr-ink-soft);
+        }
+        .wr_footer a { color: var(--wr-gold); text-decoration: none; }
+        .wr_footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="wr_page">
+
+    <!-- 顶部：返回首页入口 -->
+    <nav class="wr_topbar">
+        <a class="wr_home_link" href="./index.html">← 返回首页</a>
+        <span style="font-size:11px;color:var(--wr-ink-soft);letter-spacing:.12em;">SVG WAY</span>
+    </nav>
+
+    <!-- Hero -->
+    <header class="wr_hero">
+        <div class="wr_hero_tag">Vol. 04 — Mobile Tabbar</div>
+        <h1>Vector, <em>crisp</em> at any size.</h1>
+        <p>iconfont SVG symbol · 4 项自适应均分 · 数字徽章 + 红点</p>
+    </header>
+
+    <!-- 说明 -->
+    <section class="wr_note">
+        <b>SVG 方式实现要点</b>
+        <ul>
+            <li>引入 iconfont.js，自动注入 SVG symbol 雪碧图</li>
+            <li>&lt;use xlink:href="#icon-xxx"&gt; 引用矢量图标</li>
+            <li>fill: currentColor 让图标颜色跟随导航项状态</li>
+            <li>矢量渲染，任意缩放不失真，支持多色图标</li>
+        </ul>
+    </section>
+
+    <!-- 点击反馈 -->
+    <div class="wr_feedback" id="wr_feedback">TAP A TAB ↓</div>
+
+    <!-- 页脚 -->
+    <footer class="wr_footer">
+        <a href="./index.html">← 返回首页</a>
+        &nbsp;·&nbsp;
+        <a href="./iconfont-3.html">字体版 →</a>
+    </footer>
+
+</div>
+
+<!-- iconfont.js：将图标以 SVG symbol 形式注入页面 -->
+<script src="./font/font_5231987_xajilc7mun8/iconfont.js"></script>
+
+<!-- ========== 底部导航（SVG 方式） ========== -->
+<nav class="wr_bottom_nav" id="wr_bottom_nav">
+    <button class="wr_nav_item wr_active" data-wr-name="首页">
+        <svg class="wr_svg" aria-hidden="true"><use xlink:href="#icon-shouye-zhihui"></use></svg>
+        <span class="wr_label">首页</span>
+    </button>
+
+    <button class="wr_nav_item" data-wr-name="喜欢">
+        <svg class="wr_svg" aria-hidden="true"><use xlink:href="#icon-xihuan"></use></svg>
+        <span class="wr_badge" id="wr_badge">8</span>
+        <span class="wr_label">喜欢</span>
+    </button>
+
+    <button class="wr_nav_item" data-wr-name="分享">
+        <svg class="wr_svg" aria-hidden="true"><use xlink:href="#icon-fenxiang"></use></svg>
+        <span class="wr_dot"></span>
+        <span class="wr_label">分享</span>
+    </button>
+
+    <button class="wr_nav_item" data-wr-name="我的">
+        <svg class="wr_svg" aria-hidden="true"><use xlink:href="#icon-gerenzhongxin-zhihui"></use></svg>
+        <span class="wr_dot"></span>
+        <span class="wr_label">我的</span>
+    </button>
+</nav>
+
+<script>
+    /* 所有变量以 wr_ 开头 */
+    var wr_nav     = document.getElementById("wr_bottom_nav");
+    var wr_items   = wr_nav.querySelectorAll(".wr_nav_item");
+    var wr_fb      = document.getElementById("wr_feedback");
+    var wr_badgeEl = document.getElementById("wr_badge");
+
+    wr_items.forEach(function (wr_item) {
+        wr_item.addEventListener("click", function () {
+            wr_items.forEach(function (wr_it) { wr_it.classList.remove("wr_active"); });
+            wr_item.classList.add("wr_active");
+            wr_fb.textContent = "ACTIVE → " + wr_item.dataset.wrName;
+        });
+    });
+
+    /* 点击「喜欢」徽章数字 +1，演示数字徽章 */
+    wr_items[1].addEventListener("click", function () {
+        var wr_n = parseInt(wr_badgeEl.textContent, 10) + 1;
+        wr_badgeEl.textContent = wr_n > 99 ? "99+" : wr_n;
+    });
+</script>
+
+</body>
+</html>

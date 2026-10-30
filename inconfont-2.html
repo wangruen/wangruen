@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICON GALLERY · Lucide</title>
+    <!-- Lucide 以 SVG 方式渲染，无需 CSS -->
+    <style>
+        /* ========== 艺术品牌风 · 设计变量 ========== */
+        :root {
+            --wr-bg:        #f6f4ef;
+            --wr-surface:   #ffffff;
+            --wr-surface-2: #f0ece3;
+            --wr-ink:       #1a1a1a;
+            --wr-ink-soft:  #6b6a63;
+            --wr-ink-mute:  #a9a79e;
+            --wr-accent:    #b8864b;
+            --wr-accent-hi: #d4a066;
+            --wr-line:      rgba(26, 26, 26, 0.08);
+            --wr-line-hi:   rgba(26, 26, 26, 0.18);
+            --wr-shadow:    0 10px 36px rgba(40, 30, 20, 0.08);
+            --wr-shadow-hi: 0 16px 48px rgba(40, 30, 20, 0.14);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            background: var(--wr-bg);
+            color: var(--wr-ink);
+            font-family: "Inter", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            font-feature-settings: "ss01", "cv11";
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .wr_nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 56px;
+            background: rgba(246, 244, 239, 0.82);
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            border-bottom: 1px solid var(--wr-line);
+        }
+
+        .wr_brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: "Playfair Display", Georgia, "Songti SC", "STSong", serif;
+            font-size: 22px;
+            letter-spacing: 0.08em;
+            color: var(--wr-ink);
+        }
+
+        .wr_nav_links { display: flex; gap: 28px; }
+        .wr_nav_links a {
+            color: var(--wr-ink-soft);
+            text-decoration: none;
+            font-size: 13px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+        .wr_nav_links a:hover { color: var(--wr-accent); }
+        .wr_nav_links .wr_active { color: var(--wr-accent); }
+
+        /* Hero */
+        .wr_hero {
+            padding: 88px 56px 56px;
+            text-align: center;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .wr_hero_tag {
+            display: inline-block;
+            padding: 6px 18px;
+            border: 1px solid var(--wr-line-hi);
+            border-radius: 999px;
+            font-size: 12px;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--wr-accent);
+            margin-bottom: 28px;
+            background: var(--wr-surface);
+        }
+
+        .wr_hero h1 {
+            font-family: "Playfair Display", Georgia, "Songti SC", "STSong", serif;
+            font-size: clamp(38px, 7vw, 76px);
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            line-height: 1.05;
+            margin-bottom: 22px;
+        }
+
+        .wr_hero h1 em {
+            font-style: italic;
+            color: var(--wr-accent);
+        }
+
+        .wr_hero p {
+            font-size: 16px;
+            color: var(--wr-ink-soft);
+            max-width: 560px;
+            margin: 0 auto;
+            letter-spacing: 0.02em;
+        }
+
+        /* 工具栏 */
+        .wr_toolbar {
+            max-width: 1240px;
+            margin: 0 auto 24px;
+            padding: 0 56px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .wr_toolbar input[type="text"] {
+            flex: 1;
+            min-width: 220px;
+            padding: 12px 18px;
+            background: var(--wr-surface);
+            border: 1px solid var(--wr-line-hi);
+            border-radius: 999px;
+            font-size: 14px;
+            color: var(--wr-ink);
+            outline: none;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .wr_toolbar input[type="text"]:focus {
+            border-color: var(--wr-accent);
+            box-shadow: 0 0 0 4px rgba(184, 134, 75, 0.12);
+        }
+        .wr_toolbar input[type="text"]::placeholder { color: var(--wr-ink-mute); }
+
+        /* 分类 */
+        .wr_section {
+            padding: 24px 56px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+
+        .wr_section_header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--wr-line);
+        }
+
+        .wr_section_header h2 {
+            font-family: "Playfair Display", Georgia, "Songti SC", "STSong", serif;
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+        }
+
+        .wr_section_header .wr_count {
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--wr-ink-soft);
+        }
+
+        /* 图标网格 */
+        .wr_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 14px;
+        }
+
+        .wr_icon_card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 28px 16px 22px;
+            background: var(--wr-surface);
+            border: 1px solid var(--wr-line);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.35s cubic-bezier(.2,.7,.2,1),
+                        border-color 0.3s ease,
+                        box-shadow 0.35s ease;
+        }
+
+        .wr_icon_card:hover {
+            transform: translateY(-4px);
+            border-color: var(--wr-accent);
+            box-shadow: var(--wr-shadow-hi);
+        }
+
+        .wr_icon_card svg {
+            width: 36px;
+            height: 36px;
+            stroke: var(--wr-accent);
+            stroke-width: 1.6;
+            fill: none;
+            transition: transform 0.4s cubic-bezier(.2,.7,.2,1), stroke 0.3s ease;
+        }
+        .wr_icon_card:hover svg {
+            transform: scale(1.08) rotate(-2deg);
+            stroke: var(--wr-accent-hi);
+        }
+
+        .wr_icon_card .wr_label {
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--wr-ink-soft);
+            text-align: center;
+            word-break: break-all;
+            max-width: 100%;
+            font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        }
+
+        /* 复制提示 */
+        .wr_toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            padding: 12px 24px;
+            background: var(--wr-ink);
+            color: var(--wr-surface);
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            border-radius: 999px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 999;
+        }
+        .wr_toast.wr_show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 空状态 */
+        .wr_empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--wr-ink-mute);
+            font-family: "Playfair Display", Georgia, serif;
+            font-style: italic;
+        }
+
+        /* 页脚 */
+        .wr_footer {
+            padding: 60px 56px 40px;
+            text-align: center;
+            border-top: 1px solid var(--wr-line);
+            margin-top: 40px;
+            color: var(--wr-ink-soft);
+            font-size: 12px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+        .wr_footer a {
+            color: var(--wr-accent);
+            text-decoration: none;
+        }
+        .wr_footer a:hover { color: var(--wr-accent-hi); text-decoration: underline; }
+
+        @media (max-width: 720px) {
+            .wr_nav, .wr_hero, .wr_section, .wr_footer, .wr_toolbar {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+            .wr_nav { flex-direction: column; gap: 14px; }
+            .wr_grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航 -->
+    <nav class="wr_nav">
+        <div class="wr_brand">✦ ATELIER · ICONS</div>
+        <div class="wr_nav_links">
+            <a href="./index.html">首页</a>
+            <a href="./iconfont-1.html">Font Awesome</a>
+            <a href="./inconfont-2.html" class="wr_active">Lucide</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="wr_hero">
+        <div class="wr_hero_tag">Vol. 02 — Line Geometry</div>
+        <h1>Geometry of <em>silence</em>.</h1>
+        <p>精选 Lucide 线性图标集，以内联 SVG 方式呈现。支持搜索，点击任意图标复制其 data-lucide 名称。</p>
+    </header>
+
+    <!-- 搜索 -->
+    <div class="wr_toolbar">
+        <input type="text" id="wr_searchInput" placeholder="Search icons... 输入图标名">
+    </div>
+
+    <!-- 全部图标 -->
+    <section class="wr_section">
+        <div class="wr_section_header">
+            <h2>Lucide Icons</h2>
+            <span class="wr_count" id="wr_lucide_count">0</span>
+        </div>
+        <div class="wr_grid" id="wr_lucide_grid"></div>
+        <div class="wr_empty" id="wr_empty" style="display:none;">No matching icons found.</div>
+    </section>
+
+    <!-- Footer：返回首页入口 -->
+    <footer class="wr_footer">
+        <p>
+            <a href="./index.html">← 返回首页</a>
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            Lucide v0.441.0 · ISC License
+        </p>
+    </footer>
+
+    <!-- 复制提示 -->
+    <div class="wr_toast" id="wr_toast">Copied ✓</div>
+
+    <!-- 本地 Lucide UMD（SVG 方式） -->
+    <script src="./cdn/lucide/lucide.min.js"></script>
+    <script>
+        /* ========== Lucide 图标精选列表 ========== */
+        const wr_lucideIcons = [
+            "home","building-2","store","shopping-bag","shopping-cart","credit-card",
+            "user","user-plus","user-minus","users","user-circle","user-check","user-x",
+            "heart","star","bookmark","flag","bell","bell-off","mail","mail-check","mail-x",
+            "phone","phone-call","phone-off","smartphone","tablet","laptop","monitor",
+            "search","search-check","search-x","filter","filter-x",
+            "compass","map","map-pin","map-pin-off","navigation","navigation-off",
+            "camera","camera-off","video","video-off","image","image-off","gallery-horizontal",
+            "music","disc","headphones","volume","volume-1","volume-2","volume-x","mic","mic-off",
+            "sun","sunrise","sunset","moon","cloud","cloud-sun","cloud-moon","cloud-rain","cloud-snow","cloud-lightning","cloud-off",
+            "umbrella","umbrella-off","snowflake","droplets","droplet","flame","zap","wind","leaf","trees","mountain","mountain-snow",
+            "plane","train","car","bike","bus","taxi","ship","truck","fuel","map-pinned","parking-meter",
+            "coffee","cup-soda","ice-cream-cone","cookie","cake","candy","apple","carrot","salad","utensils-crossed","pizza","sandwich",
+            "gift","ticket","ticket-check","tag","tags","receipt","wallet","coins","banknote","piggy-bank",
+            "lock","lock-open","key","key-round","shield","shield-check","shield-alert","shield-off",
+            "eye","eye-off","ear","ear-off","message-circle","message-square","messages","send","reply","reply-all","share-2","share-3",
+            "thumbs-up","thumbs-down","smile","frown","meh","laugh","heart-handshake","hand-coins",
+            "calendar","calendar-check","calendar-x","clock","hourglass","timer","stopwatch","alarm-clock",
+            "battery","battery-charging","battery-full","battery-low","battery-off","plug","power",
+            "wifi","wifi-off","rss","radio","satellite","antenna","signal","tower-control",
+            "settings","settings-2","wrench","screwdriver","hammer","nut","cog","cog-refresh",
+            "flask-conical","flask-round","beaker","pipette","dna","microscope","brain",
+            "book","book-open","book-marked","library","file","file-text","file-plus","file-x","folder","folder-open","folder-plus",
+            "download","upload","cloud-download","cloud-upload","import","export",
+            "arrow-down","arrow-up","arrow-left","arrow-right","chevron-down","chevron-up","chevron-left","chevron-right",
+            "move","move-diagonal","move-horizontal","move-vertical","arrow-big-down","arrow-big-up","arrow-big-left","arrow-big-right",
+            "rotate-ccw","rotate-cw","refresh-cw","refresh-ccw","repeat","undo","redo",
+            "play","play-circle","pause","pause-circle","skip-back","skip-forward","skip-backward","skip-forward",
+            "circle","circle-check","circle-x","circle-alert","circle-help","circle-info","circle-dot","circle-off",
+            "check","check-check","x","minus","plus","equal","tilde","percent","hash","at-sign","dollar-sign","euro","pound-sterling","yen","bitcoin",
+            "square","square-check","square-x","square-plus","square-minus","rectangle-horizontal","panel-top","panel-bottom","panel-left","panel-right",
+            "triangle","triangle-alert","alert-triangle","octagon","hexagon","pentagon","diamond","gem","crown","medal","trophy","award",
+            "sparkles","star","sparkle","wand","palette","brush","pen-tool","pen","feather","type","signature","mouse-pointer","pointer","grip","grip-vertical",
+            "terminal","code","brackets","braces","bug","bomb","skull","ghost","robot","bug-off","cat","dog","rabbit","bird","fish","snail","bug",
+            "apple","cherry","banana","grape","peach","strawberry","lemon","orange","melon","watermelon",
+            "cherry","beans","cabbage","carrot","cauliflower","cherry-tomato","corn","cucumber","egg","egg-fried","ham","ice-cream","salad","sausage","sandwich","shrimp","utensils",
+            "angry","annoyed","dizzy","flushed","frown","laugh","meh","kiss","sad","smile","surprised","tired","wink","cry",
+
+            "home","id-card","contact","contacts","address-book","book-copy","book-marked","book-open","book-up","book-x","book-image","book-type","book-audio",
+            "briefcase","building-2","columns","rows","kanban","layout-dashboard","layout-grid","layout-list","panel-left","panel-right",
+            "clipboard","clipboard-check","clipboard-copy","clipboard-list","clipboard-paste","clipboard-x","copy","paste","scissors","eraser","trash","trash-2",
+            "save","save-all","save-off","download-cloud","upload-cloud","hard-drive","database","server","cloud","cloud-off","globe","globe-2","globe-lock",
+            "pie-chart","bar-chart","bar-chart-2","line-chart","area-chart","trending-up","trending-down","activity","radar","chart-candlestick","chart-gantt",
+            "lock-keyhole","unlock-keyhole","key-round","fingerprint","scan-face","scan-line","scan-search","qr-code","barcode","scan",
+            "gift","gift-heart","gift","megaphone","megaphone-off","speaker","glasses","glasses-off","pencil","pencil-line","pencil-ruler",
+            "paintbrush","paintbrush-vertical","palette","frame","compass","layout-template","component","layers","stack","boxes","package","package-check","package-minus","package-open","package-search","package-x"
+        ];
+
+        /* ========== 渲染 ========== */
+        const wr_gridEl = document.getElementById("wr_lucide_grid");
+        const wr_countEl = document.getElementById("wr_lucide_count");
+        const wr_searchEl = document.getElementById("wr_searchInput");
+        const wr_emptyEl = document.getElementById("wr_empty");
+
+        function wr_render(list) {
+            // 去重：避免重复图标名造成空白或重复卡片
+            const wr_unique = Array.from(new Set(list));
+            wr_gridEl.innerHTML = "";
+            wr_countEl.textContent = wr_unique.length + " glyphs";
+            wr_emptyEl.style.display = wr_unique.length === 0 ? "block" : "none";
+            const frag = document.createDocumentFragment();
+            wr_unique.forEach(name => {
+                const card = document.createElement("div");
+                card.className = "wr_icon_card";
+                card.dataset.name = name;
+                card.title = name + "  (click to copy)";
+
+                const icon = document.createElement("i");
+                icon.setAttribute("data-lucide", name);
+                icon.setAttribute("stroke-width", "1.6");
+
+                const label = document.createElement("div");
+                label.className = "wr_label";
+                label.textContent = name;
+
+                card.appendChild(icon);
+                card.appendChild(label);
+
+                card.addEventListener("click", () => {
+                    navigator.clipboard.writeText(name).then(() => wr_showToast(name));
+                });
+
+                frag.appendChild(card);
+            });
+            wr_gridEl.appendChild(frag);
+            // 让 Lucide 扫描新 DOM 中的 data-lucide 并渲染 SVG
+            if (window.lucide && typeof window.lucide.createIcons === "function") {
+                window.lucide.createIcons();
+            }
+        }
+
+        function wr_showToast(text) {
+            const toast = document.getElementById("wr_toast");
+            toast.textContent = "Copied: " + text;
+            toast.classList.add("wr_show");
+            clearTimeout(window.wr_toastTimer);
+            window.wr_toastTimer = setTimeout(() => toast.classList.remove("wr_show"), 1600);
+        }
+
+        wr_render(wr_lucideIcons);
+
+        /* 搜索过滤 */
+        wr_searchEl.addEventListener("input", (wr_evt) => {
+            const wr_q = wr_evt.target.value.trim().toLowerCase();
+            if (!wr_q) { wr_render(wr_lucideIcons); return; }
+            const wr_filtered = wr_lucideIcons.filter(n => n.toLowerCase().includes(wr_q));
+            wr_render(wr_filtered);
+        });
+    </script>
+</body>
+</html>
