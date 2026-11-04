@@ -1,0 +1,120 @@
+/* ============================================
+   作者：王如恩
+   建立时间：2026-11-04
+   使用大模型：GLM-5.3-Flash
+   功能名称：新闻"点击排行"组件样式（1比1还原设计图 1.jpg）
+   注：所有类名均以 wre_ 开头
+   ============================================ */
+
+/* 功能：清除默认边距 */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #fff;
+    font-family: SimSun, 'Microsoft YaHei', sans-serif;
+}
+
+/* 功能：排行组件整体容器（与设计图同宽 341px） */
+.wre_rank {
+    width: 341px;
+    margin: 40px auto;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+}
+
+/* 功能：标题栏图片 tit06.jpg（手型图标 + "点击排行"文字） */
+.wre_rank_title {
+    display: block;
+    width: 300px;
+    height: 33px;
+    padding: 8px 0 8px 10px;
+}
+
+/* 功能：选项卡栏容器 */
+.wre_rank_tabs {
+    display: flex;
+    height: 34px;
+}
+
+/* 功能：单个选项卡标题（未选中：灰底深色字） */
+.wre_rank_tab {
+    flex: 1;
+    text-align: center;
+    line-height: 32px;
+    font-size: 14px;
+    font-family: 'Microsoft YaHei', sans-serif;
+    background: #e2e2e2;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+}
+
+.wre_rank_tab:hover {
+    color: #ff6600;
+}
+
+/* 功能：当前选中选项卡（白底橙字橙色边框，与设计图一致） */
+.wre_selected {
+    background: #fff;
+    color: #ff6600;
+    font-weight: bold;
+    border: 1px solid #ff6600;
+    line-height: 30px;
+}
+
+/* 功能：选项卡下方的橙色分隔线（中间凹口），使用 lin.jpg 铺满整行 */
+.wre_rank_line {
+    height: 18px;
+    background: url(../img/lin.jpg) no-repeat center bottom;
+    background-size: 100% auto;
+}
+
+/* 功能：排行列表容器 */
+.wre_rank_list {
+    list-style: none;
+    padding: 0 12px 10px;
+}
+
+/* 功能：排行列表单行（序号 + 标题 + 点击量 三栏布局） */
+.wre_rank_list li {
+    display: flex;
+    align-items: center;
+    height: 31px;
+    overflow: hidden;
+}
+
+/* 功能：序号列（默认普通数字，4-8 名灰色） */
+.wre_num {
+    width: 22px;
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+}
+
+/* 功能：前3名序号套用 k.jpg 橙色方框，数字加粗变橙 */
+.wre_top3 .wre_num {
+    background: url(../img/k.jpg) no-repeat center;
+    background-size: 15px 15px;
+    color: #ff6600;
+    font-weight: bold;
+}
+
+/* 功能：新闻标题列，超长自动截断 */
+.wre_txt {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #333;
+    font-size: 13px;
+}
+
+/* 功能：点击量列，右对齐灰字 */
+.wre_count {
+    width: 58px;
+    text-align: right;
+    color: #999;
+    font-size: 12px;
+}

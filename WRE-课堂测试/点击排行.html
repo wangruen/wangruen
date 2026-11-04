@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!-- 作者：王如恩 | 建立时间：2026-11-04 | 使用大模型：GLM-5.3-Flash | 功能名称：新闻"点击排行"组件（1比1还原课堂设计图1.jpg） -->
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点击排行</title>
+    <link rel="stylesheet" href="css/点击排行.css">
+</head>
+<body>
+    <div class="wre_rank" id="wre_rank">
+        <!-- 功能：组件标题栏，使用设计提供的 tit06.jpg 标题图（含手型图标与"点击排行"文字） -->
+        <img class="wre_rank_title" src="img/tit06.jpg" alt="点击排行">
+
+        <!-- 功能：排行选项卡，默认选中"24小时排行" -->
+        <div class="wre_rank_tabs" id="wre_rankTabs">
+            <span class="wre_rank_tab">实时点击</span>
+            <span class="wre_rank_tab wre_selected">24小时排行</span>
+        </div>
+
+        <!-- 功能：选项卡下方的橙色分隔线（中间带凹口），使用设计提供的 lin.jpg -->
+        <div class="wre_rank_line"></div>
+
+        <!-- 功能：排行列表，由 js 点击排行.js 动态渲染，前3名序号带橙色方框 -->
+        <ul class="wre_rank_list" id="wre_rankList"></ul>
+    </div>
+
+    <!-- 功能：外部引入排行组件交互脚本 -->
+    <script src="js/点击排行.js"></script>
+</body>
+</html>

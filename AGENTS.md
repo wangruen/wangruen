@@ -22,3 +22,7 @@ Static 《高级网页设计》 coursework repo: plain HTML/CSS/JS, no framework
 - Chinese filenames, titles, content, and comments are intentional. Preserve UTF-8 and exact names (e.g. `inconfont-2.html`, `24002120528.王如恩.首页.html`). PowerShell may render these names as mojibake in the console; that is a display issue, not file corruption.
 - Root exercises often use one self-contained file with inline `<style>`/`<script>`; the `四级项目/` pages use the shared external stylesheet. Follow the existing pattern of the file you edit.
 - Exercise pages deliberately use `prompt`/`alert`/`console.log` and `document.write`; don't "modernize" them into a UI unless asked.
+- Every new HTML file must begin with an HTML comment right after the doctype, containing: 作者 王如恩、建立时间（创建日期）、使用大模型（生成该文件的模型名）、功能名称（该页面用途）。Format: `<!-- 作者：王如恩 | 建立时间：YYYY-MM-DD | 使用大模型：<model> | 功能名称：<用途> -->`.
+- Every JS function must have a preceding comment (Chinese) describing what the function mainly does, e.g. `// 功能：校验表单输入并弹出提示`.
+- Also applies to CSS/JS identifiers: classes, ids, and JS variables start with `wre_`.
+- Before executing any user prompt, append it (time, model, prompt text) to `24002120528-王如恩.txt` in the repo root; never overwrite existing content.
