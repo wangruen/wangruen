@@ -39,3 +39,13 @@
 模型: GLM-5.3-Flash
 提示词:
 把发布链接里的新闻Tab选项卡改成我新提交的课堂作业
+
+===== 2026-11-06 14:36:42 =====
+模型: GLM-5.3-Flash
+提示词:
+帮我完善这个html中的任务四代码，并检查前三个任务的代码，要求最后效果同网址中的效果相同。`https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson`
+
+===== 2026-11-06 15:02:24 =====
+模型: GLM-5.3-Flash
+提示词:
+将这个html提交到GitHub，并加入到index.html中，名字叫Swiper任务页。
