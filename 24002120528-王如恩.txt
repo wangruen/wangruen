@@ -49,3 +49,8 @@
 模型: GLM-5.3-Flash
 提示词:
 将这个html提交到GitHub，并加入到index.html中，名字叫Swiper任务页。
+
+===== 2026-11-09 13:28:57 =====
+模型: GLM-5.3-Flash
+提示词:
+帮我按照图片中的任务一、二、三，逐一完成作业。（图片内容：任务一提示词工程师——两轮提示词生成 new Swiper('.mySwiper') 配置并验证；任务二 creative 仿写——为演示区新增第 7 个按钮「creative 电影胶片」并写 prev/next transform 白话解释；任务三 综合创作——为光影展添加第六件大国重器「爱达·魔都号」2024年1月首航（AI 生成横版 16:9 图片），并新增课堂上没讲过的 Swiper 能力（keyboard/mousewheel/zoom/parallax 任选其一），提交物为能运行页面 + AI 关键对话记录；要求 11.11 前提交 github 并给提示词留访问入口）

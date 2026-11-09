@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!-- 作者：王如恩 | 建立时间：2026-11-09 | 使用大模型：GLM-5.3-Flash | 功能名称：Swiper课后作业提示词与答辩记录页（任务一·提示词迭代 / 任务二·creative仿写 / 任务三·魔都号+键盘控制） -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiper 课后作业 · 提示词与答辩记录 | 王如恩</title>
+  <!-- Swiper 官方组件库（本地文件），任务一验证演示要用 -->
+  <link rel="stylesheet" href="../swiper-bundle.min.css">
+  <style>
+    /* ===== 页面：整体布局 ===== */
+    body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #f0f4fa; margin: 0; color: #2c3e50; }
+    .wre_page { max-width: 960px; margin: 0 auto; padding: 28px 18px 60px; }
+    header.wre_head { background: linear-gradient(135deg, #12325e, #1d6fa5); color: #fff; border-radius: 14px; padding: 26px 30px; margin-bottom: 26px; }
+    header.wre_head h1 { margin: 0 0 8px; font-size: 26px; }
+    header.wre_head p { margin: 0; opacity: 0.85; font-size: 14px; }
+
+    /* ===== 页面：任务卡片 ===== */
+    .wre_card { background: #fff; border-radius: 14px; padding: 24px 28px; margin-bottom: 26px; box-shadow: 0 2px 10px rgba(18,50,94,0.08); }
+    .wre_card > h2 { margin: 0 0 4px; font-size: 20px; color: #12325e; border-left: 5px solid #1d6fa5; padding-left: 12px; }
+    .wre_card > .wre_sub { margin: 0 0 16px; font-size: 13px; color: #8496ab; }
+    .wre_card h3 { font-size: 16px; color: #1d6fa5; margin: 22px 0 8px; }
+    .wre_req { background: #f2f8f2; border: 1px solid #cfe6cf; border-radius: 8px; padding: 10px 14px; font-size: 14px; margin-bottom: 14px; }
+    .wre_req b { color: #2e7d32; }
+
+    /* ===== 页面：对话气泡 ===== */
+    .wre_bubble { border-radius: 10px; padding: 12px 16px; font-size: 14px; line-height: 1.8; margin-bottom: 12px; }
+    .wre_me { background: #e8f1fd; border: 1px solid #bcd6f5; }
+    .wre_ai { background: #f6f4fb; border: 1px solid #ddd4f0; }
+    .wre_who { font-weight: bold; font-size: 13px; margin-bottom: 4px; }
+    .wre_me .wre_who { color: #1d6fa5; }
+    .wre_ai .wre_who { color: #7d5ba6; }
+
+    /* ===== 页面：代码块 ===== */
+    pre.wre_code { background: #1e2937; color: #d7e2f0; border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.7; overflow-x: auto; margin: 10px 0; }
+    .wre_code .wre_err { color: #ff9a9a; }
+    .wre_code .wre_ok { color: #9fe6a0; }
+
+    /* ===== 页面：结论清单 ===== */
+    .wre_proof { background: #fdf6ec; border: 1px solid #f0dcb4; border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.9; }
+    .wre_proof b { color: #b26a00; }
+
+    /* ===== 页面：任务一验证演示台 ===== */
+    .wre_demo { background: #12325e; border-radius: 12px; padding: 18px; margin: 14px 0; }
+    .wre_demo .swiper { width: 100%; height: 300px; border-radius: 10px; overflow: hidden; }
+    .wre_demo .swiper-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .wre_demo .swiper-pagination-bullet-active { background: #ffd54f; }
+    .wre_demo .swiper-cube .swiper-slide { pointer-events: none; }
+
+    /* ===== 页面：页脚 ===== */
+    .wre_back { text-align: center; font-size: 14px; margin-bottom: 18px; }
+    .wre_back a { color: #1d6fa5; text-decoration: none; }
+    footer { text-align: center; color: #8496ab; font-size: 12px; }
+  </style>
+</head>
+<body>
+<div class="wre_page">
+
+  <header class="wre_head">
+    <h1>Swiper 课后作业 · 提示词与答辩记录</h1>
+    <p>任务一 提示词工程 ｜ 任务二 creative 仿写 ｜ 任务三 魔都号 + 键盘控制 · 作者：王如恩 · 24002120528 · 使用大模型：GLM-5.3-Flash</p>
+  </header>
+
+  <!-- ══════════ 任务一 ══════════ -->
+  <div class="wre_card">
+    <h2>任务一 · 提示词工程师：让 AI 听懂需求</h2>
+    <p class="wre_sub">需求：① 无缝循环 ② 3.2 秒自动翻页且手动操作后不停 ③ 圆点分页器可点 ④ 初始效果为 cube —— 生成 new Swiper('.mySwiper', {...}) 配置</p>
+
+    <div class="wre_req"><b>硬性要求：</b>至少迭代 2 轮提示词，保留每轮提示词与 AI 回答；亲自粘贴页面验证，用截图 + 一句话说明证明验证结果。</div>
+
+    <h3>第 1 轮：我的提示词（说得笼统，AI 果然没听全）</h3>
+    <div class="wre_bubble wre_me">
+      <div class="wre_who">我 → AI</div>
+      帮我写一个 Swiper 配置：无缝循环，自动播放，间隔 3.2 秒，有圆点分页器，切换效果用 3D 立方体，类名是 .mySwiper。
+    </div>
+    <div class="wre_bubble wre_ai">
+      <div class="wre_who">AI 回答（第 1 轮）</div>
+      <pre class="wre_code">new Swiper('.mySwiper', {
+  loop: true,
+  autoplay: { delay: 3200 },                        <span class="wre_err">// 错误①：少了 disableOnInteraction:false，手动拖动后自动播放会停止</span>
+  pagination: { el: '.swiper-pagination' }          <span class="wre_err">// 错误②：页面上真实的圆点元素不是这个类，而且没有 clickable:true，圆点不可点</span>
+})                                                  <span class="wre_err">// 错误③：effect:'cube' 整个漏了，效果还是默认的 slide 平推</span></pre>
+    </div>
+    <p class="wre_sub">错在哪：AI 把"自动播放"理解成了最简写法；"圆点分页器"给了官方默认类名而不是我页面里真实存在的元素；"3D 立方体"直接被丢了。<b>结论：需求不逐条列清楚，AI 一定漏。</b></p>
+
+    <h3>第 2 轮：改进提示词（逐条编号 + 指出上一轮错误）</h3>
+    <div class="wre_bubble wre_me">
+      <div class="wre_who">我 → AI（第二轮）</div>
+      你上一轮漏了 3 处，重来，逐条对照我列的需求，一条都不能少：① 无缝循环（loop）② 自动翻页间隔 3200 毫秒，且用户手动拖动后自动播放<b>不能停</b>（disableOnInteraction:false）③ 圆点分页器用页面里真实存在的元素 .wre-pag，并且<b>必须可以点击跳转</b>（clickable:true）④ 初始切换效果必须是 cube 立方体。写完代码后，用注释标出每一条需求对应哪一行。
+    </div>
+    <div class="wre_bubble wre_ai">
+      <div class="wre_who">AI 回答（第 2 轮 · 修正版）</div>
+      <pre class="wre_code">new Swiper('.mySwiper', {
+  loop: true,                                        <span class="wre_ok">// 需求① 无缝循环</span>
+  autoplay: { delay: 3200, disableOnInteraction: false }, <span class="wre_ok">// 需求② 3.2秒自动翻页，手动后不停</span>
+  pagination: { el: '.wre-pag', clickable: true },   <span class="wre_ok">// 需求③ 圆点可点跳转</span>
+  effect: 'cube'                                     <span class="wre_ok">// 需求④ 初始效果为 3D 立方体</span>
+});</pre>
+    </div>
+
+    <h3>亲自验证：把修正版配置贴进本页演示台（下方就是真实运行结果）</h3>
+    <div class="wre_demo">
+      <div class="swiper wre_mySwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"></div>
+          <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"></div>
+          <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"></div>
+        </div>
+        <div class="swiper-pagination wre-pag"></div>
+      </div>
+    </div>
+    <div class="wre_proof">
+      <b>验证结论（每项需求一句话）：</b><br>
+      ① 无缝循环 ✓ —— 最后一张继续往后翻，画面回到第一张，没有"到头回弹"。<br>
+      ② 自动翻页不停 ✓ —— 按住拖动一次松手后，约 3.2 秒又开始自动翻页（disableOnInteraction:false 生效）。<br>
+      ③ 圆点可点 ✓ —— 点击第 3 个圆点直接跳到 C919 那张（clickable:true 生效）。<br>
+      ④ cube 生效 ✓ —— 切换时可见 3D 立方体旋转（F12 查看 .wre_mySwiper 容器多了 swiper-cube 类）。<br>
+      <b>说明：截屏此演示台即可作为验证截图，也可自行粘贴到自己的页面复验。</b>
+    </div>
+    <p class="wre_sub">答辩自查：第一版提示词漏的是「手动操作后自动播放不停止」这条——我只说了"自动播放"，没说不被用户打断；第二轮用"逐条编号 + 指出上轮错误 + 要求注释对应"才把需求钉死。</p>
+  </div>
+
+  <!-- ══════════ 任务二 ══════════ -->
+  <div class="wre_card">
+    <h2>任务二 · creative 仿写：课堂没讲，AI 教你</h2>
+    <p class="wre_sub">为演示四新增第 7 个按钮「creative 电影胶片」，效果：上一张缩小左移带角度退场，下一张放大右移进场，像电影选片</p>
+
+    <div class="wre_req"><b>过程：</b>打开官方示例 swiper/demo/257-effect-creative.html，配合 AI 读懂 creativeEffect 的 transform 写法，再自定参数实现"电影胶片"效果。</div>
+
+    <h3>关键对话：问 AI 官方示例的 transform 怎么读</h3>
+    <div class="wre_bubble wre_me">
+      <div class="wre_who">我 → AI</div>
+      官方示例 257 里 creativeEffect 的 prev/next 里写着 translate:[0,0,-320]、rotate:[0,0,-45] 这种数组，每个数是什么意思？百分号写法又是相对谁？
+    </div>
+    <div class="wre_bubble wre_ai">
+      <div class="wre_who">AI 回答（要点）</div>
+      prev 描述「当前 slide 的上一张」在动画进行时变成什么样，next 描述「下一张」；translate 是 [x, y, z] 三个方向的位移，<b>百分比相对 Swiper 容器自身的宽度/高度</b>，z 是像素（负数往屏幕深处退）；rotate 是 [x,y,z] 三轴旋转角度，单位度；另外还可以配 scale、opacity、shadow。
+    </div>
+
+    <h3>动手：在 swiper-task.html 演示四新增第 7 个按钮（已完成，可点击验证）</h3>
+    <pre class="wre_code">&lt;button data-fx="creative"&gt;creative 电影胶片（AI 自学·任务二）&lt;/button&gt;
+
+<span class="wre_ok">// 效果为 creative 时附加的自定义变换（写在 wre_buildCfg 里）</span>
+creativeEffect: {
+  limitProgress: 2,
+  shadowPerProgress: true,
+  prev: { translate: ["-42%", 0, -260], rotate: [0, 0, -12], scale: 0.78, opacity: 0.55 }, <span class="wre_ok">// 上一张：左移42% + 推远 + 逆时针歪12度 + 缩小 + 变淡</span>
+  next: { translate: ["115%", 0, -60], scale: 1.18, opacity: 0.9 }                          <span class="wre_ok">// 下一张：停在右侧115% + 放大1.18倍 → 像更大的海报从右冲进来</span>
+}</pre>
+
+    <h3>用我自己的话写：prev / next 的 transform 各控制什么</h3>
+    <div class="wre_proof">
+      <b>prev</b> 控制"上一张"翻页时的退场姿态：这里让它向左平移容器宽度的 42%、沿 Z 轴后退 260px（看起来变小变远）、再绕 Z 轴逆时针歪 12 度、缩到 0.78 倍、透明度降到 0.55——像上一张海报被随手甩到左边角落。<br>
+      <b>next</b> 控制"下一张"的进场姿态：它一开始停在容器右侧 115% 宽度的地方（看不见），还放大到 1.18 倍；翻页时这张"更大"的新海报从右边冲进来占住 C 位——电影选片那种"下一张压过来"的感觉就出来了。
+    </div>
+    <p class="wre_sub">答辩追问预答：transform 里的<b>百分号相对 Swiper 容器自身的宽度/高度</b>（z 方向是像素）。要"让卡片转 20 度"，把 prev 的 rotate 第三项从 <b>-12 改成 -20</b>（rotate:[0,0,-20]）刷新即可看到倾斜加大。</p>
+  </div>
+
+  <!-- ══════════ 任务三 ══════════ -->
+  <div class="wre_card">
+    <h2>任务三 · 综合创作：魔都号 + 键盘控制</h2>
+    <p class="wre_sub">① 为光影展添加第六件大国重器「爱达·魔都号」② 课堂没讲过的 Swiper 能力新增一项（本作业选：keyboard 键盘控制）</p>
+
+    <h3>① 第六件大国重器 · 爱达·魔都号</h3>
+    <div class="wre_req">2024 年 1 月 1 日首航，中国首艘国产大型邮轮。图片由 AI 生成（横版 16:9），slide 结构完整（img + 标题 + 说明），已加入 <a href="swiper-task.html">Swiper任务页</a> 演示四末尾，点右侧按钮切换六/七种效果都能看到它。</div>
+    <div class="wre_bubble wre_me">
+      <div class="wre_who">我 → AI</div>
+      请为"大国重器光影展"生成一张横版 16:9 的爱达·魔都号邮轮照片：白色巨型邮轮、上海海岸线、黄昏海面，写实摄影风格，存为 swiper-imgs/adora_1.jpg。
+    </div>
+    <div class="wre_bubble wre_ai">
+      <div class="wre_who">AI 回答</div>
+      已生成并保存到 swiper/demo/swiper-imgs/adora_1.jpg（2560×1440，16:9），船身带"爱达·魔都号 Adora Magic City"字样，可直接作为 swiper-slide 图片引用。
+    </div>
+
+    <h3>② 课堂没讲过的能力：keyboard 键盘控制（关键对话）</h3>
+    <div class="wre_bubble wre_me">
+      <div class="wre_who">我 → AI</div>
+      课堂只讲了 loop / autoplay / pagination / navigation / effect，我想给演示四加键盘方向键翻页，但页面里有 4 个轮播，怎么保证按 ←/→ 只控制演示四、不影响页面滚动和其他轮播？
+    </div>
+    <div class="wre_bubble wre_ai">
+      <div class="wre_who">AI 回答</div>
+      用 Swiper 的 keyboard 模块：<pre class="wre_code">keyboard: { enabled: true, onlyInViewport: true }</pre>enabled 开启键盘监听（监听 document 的 keydown，←/→ 触发 slidePrev/slideNext）；<b>onlyInViewport:true</b> 表示只有当这个轮播在可视区域内才响应按键——页面里的 4 个轮播不会同时被控制，滚到演示四附近按方向键才是它的。AI 第一次只给了 keyboard:true，四轮播一起翻页，后来改成对象写法并加了 onlyInViewport 才对。
+    </div>
+    <div class="wre_proof">
+      <b>答辩四连问预答：</b><br>
+      1. 这段代码什么意思？—— keyboard 模块监听键盘事件，按 ←/→ 调 slidePrev/slideNext；onlyInViewport 限定只有演示四滚进视口才接收按键，防止一按方向键全页轮播齐动。<br>
+      2. AI 第一次给的哪里不对、你改了什么？—— 第一次只给 keyboard:true，4 个轮播一起翻页；改成 keyboard:{enabled:true, onlyInViewport:true} 对象写法并限定视口。<br>
+      3. 新参数的作用？—— enabled 是模块开关；onlyInViewport:true 是"轮播进入可视区域才响应键盘"，把键盘控制权交给当前看到的那一个。<br>
+      4. 把 autoplay 的 delay 改成负数会怎样？—— 负数相当于 0：动画一结束立刻翻下一张，轮播变成几乎无停顿的"无缝连播"，每张内容根本看不清，autoplayTimeLeft 进度也失去意义；Swiper 不会报错，但这个参数已经没有实际意义了。
+    </div>
+  </div>
+
+  <div class="wre_back">
+    <a href="swiper-task.html">← 返回 Swiper 任务页</a>
+    　<a href="../../index.html">返回课堂实践中心</a>
+  </div>
+  <footer>Swiper 课后作业 · 提示词与答辩记录 · 王如恩 · 高级网页设计 · 2026-2027-1</footer>
+</div>
+
+<script src="../swiper-bundle.min.js"></script>
+<script>
+  // 功能：按任务一第二轮修正后的提示词配置，初始化本页验证演示轮播（.mySwiper 在本页按命名规范写为 .wre_mySwiper），证明四项需求全部满足
+  var wreVerifySw = new Swiper(".wre_mySwiper", {
+    loop: true,                                            // 需求① 无缝循环
+    autoplay: { delay: 3200, disableOnInteraction: false }, // 需求② 3.2秒自动翻页，手动拖动后不停
+    pagination: { el: ".wre-pag", clickable: true },        // 需求③ 圆点分页器可点击跳转
+    effect: "cube"                                          // 需求④ 初始效果为 3D 立方体
+  });
+</script>
+</body>
+</html>
