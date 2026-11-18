@@ -24,6 +24,11 @@
     /* ===== 页面：缩放比例指示器（加分项） ===== */
     .wy_badge { position: absolute; right: 10px; top: 10px; background: rgba(0,0,0,0.55); color: #7fe0ff; font-size: 13px; padding: 4px 10px; border-radius: 12px; pointer-events: none; }
 
+    /* ===== 页面：演示视频区 ===== */
+    .wy_video { margin-top: 22px; background: #1a2230; border-radius: 14px; padding: 14px; }
+    .wy_video h2 { margin: 0 0 10px; font-size: 16px; color: #e8edf4; }
+    .wy_video video { width: 100%; border-radius: 10px; display: block; background: #000; }
+
     /* ===== 页面：底部说明 ===== */
     footer.wy_foot { text-align: center; color: #93a1b3; font-size: 12px; margin-top: 22px; line-height: 1.9; }
   </style>
@@ -42,6 +47,12 @@
   <div class="wy_stage" id="wy_stage">
     <img class="wy_img" id="wy_img" src="swiper/demo/images/nature-1.jpg" alt="风景大图" draggable="false">
     <div class="wy_badge" id="wy_badge">1.0x</div>
+  </div>
+
+  <!-- 演示视频：手机实机运行录屏（提交要求附运行截图/演示） -->
+  <div class="wy_video">
+    <h2>🎬 手机实机演示</h2>
+    <video controls playsinline preload="metadata" src="media/任务三-演示.mp4"></video>
   </div>
 
   <footer class="wy_foot">高级网页设计 · 王如恩 · 24002120528<br>任务三：多指手势 · 变换 · 状态管理</footer>
