@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!-- 作者：王如恩 | 建立时间：2026-11-18 | 使用大模型：GLM-5.3-Flash | 功能名称：移动端图片查看器——双指缩放(1~4x) + 双击1x/2x切换 + 放大后拖动看细节 + 边界限制与阻尼 -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>图片查看器 · 双指缩放 | 王如恩</title>
+  <style>
+    /* ===== 页面：整体布局 ===== */
+    body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #14181f; margin: 0; color: #e8edf4; }
+    .wy_page { max-width: 460px; margin: 0 auto; padding: 20px 12px 46px; }
+    header.wy_head { text-align: center; margin-bottom: 12px; }
+    header.wy_head h1 { margin: 0 0 6px; font-size: 21px; }
+    header.wy_head p { margin: 0; font-size: 13px; color: #93a1b3; }
+
+    /* ===== 页面：打开提示条（要求6） ===== */
+    .wy_notice { background: #2b3a2e; border: 1px solid #4c7a54; color: #a9d8b0; font-size: 13px; text-align: center; border-radius: 8px; padding: 9px 12px; margin-bottom: 12px; }
+
+    /* ===== 页面：图片舞台（要求1：overflow hidden / touch-action none / user-select none） ===== */
+    .wy_stage { position: relative; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; border-radius: 14px; background: #000; height: 340px; box-shadow: 0 6px 24px rgba(0,0,0,0.5); }
+    .wy_img { display: block; width: 100%; transform-origin: 0 0; /* 原点固定左上角，方便位移数学计算 */ transition: transform 0.25s ease; }
+    .wy_img.wy_dragging { transition: none; /* 手势进行中关闭过渡，跟手不迟滞 */ }
+
+    /* ===== 页面：缩放比例指示器（加分项） ===== */
+    .wy_badge { position: absolute; right: 10px; top: 10px; background: rgba(0,0,0,0.55); color: #7fe0ff; font-size: 13px; padding: 4px 10px; border-radius: 12px; pointer-events: none; }
+
+    /* ===== 页面：底部说明 ===== */
+    footer.wy_foot { text-align: center; color: #93a1b3; font-size: 12px; margin-top: 22px; line-height: 1.9; }
+  </style>
+</head>
+<body>
+<div class="wy_page">
+  <header class="wy_head">
+    <h1>🔍 图片查看器</h1>
+    <p>双指缩放(1~4x) · 双击 1x/2x · 放大后拖动看细节</p>
+  </header>
+
+  <!-- 打开提示：要求原文 -->
+  <div class="wy_notice">📱 双指缩放请用手机打开（电脑可用滚轮缩放、按住拖动调试）</div>
+
+  <!-- 舞台：所有触摸事件绑定区 -->
+  <div class="wy_stage" id="wy_stage">
+    <img class="wy_img" id="wy_img" src="swiper/demo/images/nature-1.jpg" alt="风景大图" draggable="false">
+    <div class="wy_badge" id="wy_badge">1.0x</div>
+  </div>
+
+  <footer class="wy_foot">高级网页设计 · 王如恩 · 24002120528<br>任务三：多指手势 · 变换 · 状态管理</footer>
+</div>
+
+<script>
+  // ===== 状态管理：全部变换状态集中在这几个变量，旋转屏幕/窗口变化后据此恢复 =====
+  var wy_scale = 1;      // 当前缩放倍数（1~4）
+  var wy_tx = 0;         // 当前横向位移
+  var wy_ty = 0;         // 当前纵向位移
+  var wy_mode = 0;       // 手势模式：0无手势 1单指拖动 2双指缩放
+  var wy_startDist = 0;  // 双指起始间距（要求2）
+  var wy_startScale = 1; // 双指按下时的起始倍数
+  var wy_anchorX = 0;    // 缩放锚点的"图片坐标"（两指中心按下的瞬间，中心点对应图片上的位置）
+  var wy_anchorY = 0;
+  var wy_prevX = 0;      // 单指拖动上一次的坐标（算增量用）
+  var wy_prevY = 0;
+  var wy_lastTapTime = 0;  // 上一次 tap 时间（双击判定）
+  var wy_lastTapX = 0;
+  var wy_lastTapY = 0;
+
+  // ===== DOM 引用 =====
+  var wy_stageEl = document.getElementById("wy_stage");
+  var wy_imgEl = document.getElementById("wy_img");
+  var wy_badgeEl = document.getElementById("wy_badge");
+
+  // 功能：把位移限制在边界内——图片缩小到装不下方向时不允许拖出（回到居中），放大后只允许在"超出部分"范围内拖动（验收③、验收④旋转屏幕复用）
+  function wy_clamp() {
+    var wy_stageW = wy_stageEl.clientWidth;
+    var wy_stageH = wy_stageEl.clientHeight;
+    var wy_imgW = wy_imgEl.offsetWidth * wy_scale;   // 当前显示宽度
+    var wy_imgH = wy_imgEl.offsetHeight * wy_scale;  // 当前显示高度
+    // 图片比舞台小时：该方向位移锁 0（即居中、不能拖）
+    var wy_maxX = Math.max(0, (wy_imgW - wy_stageW) / 2);
+    var wy_maxY = Math.max(0, (wy_imgH - wy_stageH) / 2);
+    wy_tx = Math.min(wy_maxX, Math.max(-wy_maxX, wy_tx));
+    wy_ty = Math.min(wy_maxY, Math.max(-wy_maxY, wy_ty));
+  }
+
+  // 功能：把 scale/tx/ty 应用到图片 transform 上，并刷新比例指示器
+  function wy_apply() {
+    wy_imgEl.style.transform = "translate(" + wy_tx + "px," + wy_ty + "px) scale(" + wy_scale + ")";
+    wy_badgeEl.textContent = wy_scale.toFixed(1) + "x";
+  }
+
+  // 功能：双指按下——记录两指初始距离、起始倍数，并把"两指中心"换算成图片坐标锚点（保证缩放以两指中心为基准，验收①）
+  function wy_pinchStart(wre_t1, wre_t2) {
+    wy_mode = 2;
+    wy_startDist = Math.hypot(wre_t1.clientX - wre_t2.clientX, wre_t1.clientY - wre_t2.clientY);
+    wy_startScale = wy_scale;
+    var wy_cx = (wre_t1.clientX + wre_t2.clientX) / 2;
+    var wy_cy = (wre_t1.clientY + wre_t2.clientY) / 2;
+    // 反推锚点：当前中心点在"未缩放图片坐标系"里的位置  ix = (中心 - 位移) / 倍数
+    wy_anchorX = (wy_cx - wy_stageEl.getBoundingClientRect().left - wy_tx) / wy_scale;
+    wy_anchorY = (wy_cy - wy_stageEl.getBoundingClientRect().top - wy_ty) / wy_scale;
+    wy_imgEl.classList.add("wy_dragging"); // 缩放过程关闭过渡，实时跟手
+  }
+
+  // 功能：双指移动——按距离比例算新倍数（带边界阻尼），并让"起始锚点"始终钉在当前两指中心下方（图片不跳走的关键）
+  function wy_pinchMove(wre_t1, wre_t2) {
+    var wy_dist = Math.hypot(wre_t1.clientX - wre_t2.clientX, wre_t1.clientY - wre_t2.clientY);
+    var wy_raw = wy_startScale * (wy_dist / wy_startDist); // 要求3：按距离比例缩放
+    // 阻尼：超出 1~4 倍的部分只按 30%/20% 幅度跟随，产生"顶住"的手感（验收②）
+    if (wy_raw < 1) { wy_scale = 1 + (wy_raw - 1) * 0.3; }
+    else if (wy_raw > 4) { wy_scale = 4 + (wy_raw - 4) * 0.2; }
+    else { wy_scale = wy_raw; }
+    // 锚点跟随：两指中心(相对舞台) - 锚点图片坐标 × 新倍数 = 新位移
+    var wy_cx = (wre_t1.clientX + wre_t2.clientX) / 2 - wy_stageEl.getBoundingClientRect().left;
+    var wy_cy = (wre_t1.clientY + wre_t2.clientY) / 2 - wy_stageEl.getBoundingClientRect().top;
+    wy_tx = wy_cx - wy_anchorX * wy_scale;
+    wy_ty = wy_cy - wy_anchorY * wy_scale;
+    wy_apply();
+  }
+
+  // 功能：手势结束——把阻尼产生的越界倍数弹回 1~4，并把位移夹回边界（带 0.25s 平滑过渡）
+  function wy_gestureEnd() {
+    wy_mode = 0;
+    if (wy_scale < 1) { wy_scale = 1; }
+    if (wy_scale > 4) { wy_scale = 4; }
+    wy_clamp();
+    wy_imgEl.classList.remove("wy_dragging"); // 恢复 CSS 的 0.25s 过渡 → 弹回动画
+    wy_apply();
+  }
+
+  // 功能：双击/双敲——在 1x 与 2x 之间切换，以点击点为缩放中心，带 0.25s 过渡（要求5）
+  function wy_toggleZoom(wre_cx, wre_cy) {
+    var wy_rect = wy_stageEl.getBoundingClientRect();
+    var wy_px = wre_cx - wy_rect.left;
+    var wy_py = wre_cy - wy_rect.top;
+    if (wy_scale > 1.01) {
+      wy_scale = 1; wy_tx = 0; wy_ty = 0; // 回 1x 自动居中
+    } else {
+      // 放大到 2x：以点击点为锚，换算位移保证点击的位置留在原地
+      var wy_ix = (wy_px - wy_tx) / wy_scale;
+      var wy_iy = (wy_py - wy_ty) / wy_scale;
+      wy_scale = 2;
+      wy_tx = wy_px - wy_ix * wy_scale;
+      wy_ty = wy_py - wy_iy * wy_scale;
+      wy_clamp();
+    }
+    wy_apply(); // 保持 transition → 自带 0.25s 过渡
+  }
+
+  // 功能：touchstart——判断当前是单指还是双指，记录起始状态（要求2）
+  function wy_onTouchStart(wre_e) {
+    if (wre_e.touches.length === 2) {
+      wy_pinchStart(wre_e.touches[0], wre_e.touches[1]);
+    } else if (wre_e.touches.length === 1 && wy_mode === 0) {
+      wy_mode = 1; // 单指
+      wy_prevX = wre_e.touches[0].clientX;
+      wy_prevY = wre_e.touches[0].clientY;
+      wy_imgEl.classList.add("wy_dragging");
+    }
+  }
+
+  // 功能：touchmove——双指走缩放；单指且倍数>1 时走拖动（1x 不允许拖，验收③）；需要阻止默认行为
+  function wy_onTouchMove(wre_e) {
+    if (wy_mode === 2 && wre_e.touches.length === 2) {
+      wre_e.preventDefault();
+      wy_pinchMove(wre_e.touches[0], wre_e.touches[1]);
+    } else if (wy_mode === 1 && wre_e.touches.length === 1 && wy_scale > 1) {
+      wre_e.preventDefault(); // 要求4：只有放大后才能拖动
+      wy_tx += wre_e.touches[0].clientX - wy_prevX;
+      wy_ty += wre_e.touches[0].clientY - wy_prevY;
+      wy_prevX = wre_e.touches[0].clientX;
+      wy_prevY = wre_e.touches[0].clientY;
+      wy_apply(); // 拖动中不夹边界，松手再夹（要求4"松手后限制在边界内"）
+    }
+  }
+
+  // 功能：touchend——双指结束则收尾弹回；单指抬起时做双击判定（300ms 内两敲且位移小 → 切换 1x/2x）
+  function wy_onTouchEnd(wre_e) {
+    if (wy_mode === 2) { wy_gestureEnd(); return; }
+    if (wy_mode === 1) {
+      wy_mode = 0;
+      wy_imgEl.classList.remove("wy_dragging");
+      wy_clamp(); // 要求4：松手后限制在边界内
+      wy_apply();
+      // 双击判定：与上一次 tap 间隔 <300ms、距离 <24px
+      var wre_t = wre_e.changedTouches[0];
+      var wy_now = Date.now();
+      if (wy_now - wy_lastTapTime < 300 && Math.hypot(wre_t.clientX - wy_lastTapX, wre_t.clientY - wy_lastTapY) < 24) {
+        wy_toggleZoom(wre_t.clientX, wre_t.clientY);
+        wy_lastTapTime = 0; // 防止三连击被误判
+      } else {
+        wy_lastTapTime = wy_now;
+        wy_lastTapX = wre_t.clientX;
+        wy_lastTapY = wre_t.clientY;
+      }
+    }
+  }
+
+  // 功能：电脑调试辅助——滚轮以鼠标位置为中心缩放；按住拖动；双击切换
+  function wy_bindMouseDebug() {
+    wy_stageEl.addEventListener("wheel", function (wre_e) {
+      wre_e.preventDefault();
+      var wy_rect = wy_stageEl.getBoundingClientRect();
+      var wy_px = wre_e.clientX - wy_rect.left;
+      var wy_py = wre_e.clientY - wy_rect.top;
+      var wy_ix = (wy_px - wy_tx) / wy_scale;
+      var wy_iy = (wy_py - wy_ty) / wy_scale;
+      wy_scale = Math.min(4, Math.max(1, wy_scale * (wre_e.deltaY < 0 ? 1.15 : 0.87)));
+      wy_tx = wy_px - wy_ix * wy_scale;
+      wy_ty = wy_py - wy_iy * wy_scale;
+      if (wy_scale === 1) { wy_tx = 0; wy_ty = 0; }
+      wy_clamp();
+      wy_apply();
+    }, { passive: false });
+    var wy_down = false;
+    wy_stageEl.addEventListener("mousedown", function (wre_e) {
+      if (wy_scale <= 1) { return; } // 与要求4一致：1x 不拖
+      wy_down = true; wy_prevX = wre_e.clientX; wy_prevY = wre_e.clientY;
+      wy_imgEl.classList.add("wy_dragging");
+    });
+    window.addEventListener("mousemove", function (wre_e) {
+      if (!wy_down) { return; }
+      wy_tx += wre_e.clientX - wy_prevX;
+      wy_ty += wre_e.clientY - wy_prevY;
+      wy_prevX = wre_e.clientX; wy_prevY = wre_e.clientY;
+      wy_apply();
+    });
+    window.addEventListener("mouseup", function () {
+      if (!wy_down) { return; }
+      wy_down = false;
+      wy_imgEl.classList.remove("wy_dragging");
+      wy_clamp();
+      wy_apply();
+    });
+    wy_stageEl.addEventListener("dblclick", function (wre_e) { wy_toggleZoom(wre_e.clientX, wre_e.clientY); });
+  }
+
+  // 功能：旋转屏幕/窗口尺寸变化——重新按当前 scale 夹边界，缩放倍数状态不丢失（验收④）
+  function wy_onResize() {
+    wy_clamp();
+    wy_apply();
+  }
+
+  // 功能：初始化——绑定触摸/调试/旋转事件，显示初始 1x 居中状态
+  window.addEventListener("DOMContentLoaded", function () {
+    wy_stageEl.addEventListener("touchstart", wy_onTouchStart, { passive: true });
+    wy_stageEl.addEventListener("touchmove", wy_onTouchMove, { passive: false });
+    wy_stageEl.addEventListener("touchend", wy_onTouchEnd);
+    wy_stageEl.addEventListener("touchcancel", wy_gestureEnd);
+    wy_bindMouseDebug();
+    window.addEventListener("resize", wy_onResize);
+    window.addEventListener("orientationchange", wy_onResize);
+    wy_apply();
+  });
+</script>
+</body>
+</html>

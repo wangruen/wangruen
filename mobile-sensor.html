@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!-- 作者：王如恩 学号：24002120528 | 建立时间：2026-11-18 | 使用大模型：GLM-5.3-Flash | 功能名称：摇一摇彩蛋——devicemotion 监听 accelerationIncludingGravity 判定摇动(阈值18)，1.5s冷却，随机抽今日菜谱；无传感器时降级为按钮抽取 -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>摇一摇 · 抽今日菜谱 | 王如恩 24002120528</title>
+  <style>
+    /* ===== 页面：整体布局 ===== */
+    body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: linear-gradient(180deg, #1d2430, #101623); margin: 0; min-height: 100vh; color: #eef2f7; }
+    .wy_page { max-width: 420px; margin: 0 auto; padding: 34px 18px 60px; text-align: center; }
+    header h1 { margin: 0 0 8px; font-size: 24px; }
+    header p { margin: 0; font-size: 13px; color: #9aa8bc; }
+
+    /* ===== 页面：提示条与结果卡 ===== */
+    .wy_tip { margin: 18px 0 6px; font-size: 15px; color: #ffd37a; }
+    .wy_card { margin: 18px auto 0; width: 260px; min-height: 210px; background: linear-gradient(150deg, #ff9a56, #ff5f3d); border-radius: 18px; padding: 30px 20px; box-sizing: border-box; box-shadow: 0 8px 26px rgba(255,95,61,0.35); }
+    .wy_card .wy_emoji { font-size: 52px; line-height: 1.1; }
+    .wy_card .wy_name { margin: 12px 0 6px; font-size: 22px; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+    .wy_card .wy_desc { margin: 0; font-size: 13px; line-height: 1.8; opacity: 0.95; }
+    /* 弹出动画：摇一摇命中后的简单弹出效果（要求4） */
+    @keyframes wy_pop { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); } }
+    .wy_card.wy_pop { animation: wy_pop 0.45s ease; }
+    .wy_status { margin-top: 14px; font-size: 13px; color: #8fa0b8; min-height: 20px; }
+
+    /* ===== 页面：降级按钮（要求5） ===== */
+    .wy_btn { display: inline-block; margin-top: 14px; padding: 10px 26px; border: none; border-radius: 22px; background: #1d6fa5; color: #fff; font-size: 15px; cursor: pointer; }
+    .wy_btn:active { transform: scale(0.96); }
+    footer { margin-top: 34px; font-size: 12px; color: #8fa0b8; line-height: 1.9; }
+  </style>
+</head>
+<body>
+<div class="wy_page">
+  <header>
+    <h1>🎲 摇一摇 · 抽今日菜谱</h1>
+    <p>作者：王如恩 · 学号 24002120528</p>
+  </header>
+
+  <div class="wy_tip">摇一摇手机，抽今日菜谱！</div>
+
+  <!-- 结果卡：随机菜谱显示在这里 -->
+  <div class="wy_card" id="wy_card">
+    <div class="wy_emoji" id="wy_emoji">🍽️</div>
+    <h2 class="wy_name" id="wy_name">等待摇动…</h2>
+    <p class="wy_desc" id="wy_desc">用力摇一摇手机试试</p>
+  </div>
+  <div class="wy_status" id="wy_status"></div>
+
+  <!-- iOS 授权按钮：iOS13+ 必须由用户手势触发权限申请（验收③） -->
+  <button class="wy_btn" id="wy_authBtn" style="display:none">开启摇一摇（iOS 需点击授权）</button>
+  <!-- 降级按钮：设备不支持传感器时出现（要求5） -->
+  <button class="wy_btn" id="wy_fallbackBtn" style="display:none">点我抽一次</button>
+
+  <footer>
+    高级网页设计 · 任务四A 摇一摇<br>
+    传感器不可用时的降级说明见页面下方
+  </footer>
+</div>
+
+<script>
+  // ===== 菜谱数据：随机抽取池 =====
+  var wy_dishes = [
+    { emoji: "🌶️", name: "宫保鸡丁", desc: "咸鲜微辣带酸甜，花生酥脆，下饭神器" },
+    { emoji: "🍲", name: "麻婆豆腐", desc: "麻辣烫香酥嫩俱全，豆腐嫩滑红油亮" },
+    { emoji: "🦆", name: "北京烤鸭", desc: "皮脆枣红，薄饼葱丝甜面酱一口酥香" },
+    { emoji: "🥟", name: "上海小笼包", desc: "皮薄汁多，先开窗后喝汤" },
+    { emoji: "🍜", name: "兰州牛肉面", desc: "一清二白三红四绿五黄，汤镜者清" },
+    { emoji: "🐟", name: "酸菜鱼", desc: "酸辣开胃，鱼片嫩滑汤色奶白" }
+  ];
+
+  var wy_lastShake = 0;   // 上一次触发摇动的时间戳（冷却用，要求3）
+  var wy_sensorOk = true; // 传感器是否可用（用于降级判断，要求5）
+
+  // 功能：把一道菜渲染到结果卡上并触发弹出动画（要求4）
+  function wy_showDish() {
+    var wy_i = Math.floor(Math.random() * wy_dishes.length); // 随机抽取一道
+    var wy_d = wy_dishes[wy_i];
+    document.getElementById("wy_emoji").textContent = wy_d.emoji;
+    document.getElementById("wy_name").textContent = wy_d.name;
+    document.getElementById("wy_desc").textContent = wy_d.desc;
+    var wy_card = document.getElementById("wy_card");
+    wy_card.classList.remove("wy_pop");
+    void wy_card.offsetWidth; // 强制重排，让动画可以连续重复触发
+    wy_card.classList.add("wy_pop");
+  }
+
+  // 功能：进入降级模式——显示"当前设备不支持"提示与"点我抽一次"按钮（要求5）
+  function wy_enterFallback() {
+    if (!wy_sensorOk) { return; } // 防止重复进入
+    wy_sensorOk = false;
+    document.getElementById("wy_status").textContent = "当前设备不支持，请用手机打开";
+    document.getElementById("wy_fallbackBtn").style.display = "inline-block";
+  }
+
+  // 功能：计算合成加速度模长并判定摇动——超过阈值18且不在1.5s冷却期内才触发一次（要求2、3）
+  function wy_onDeviceMotion(wy_e) {
+    var wy_g = wy_e.accelerationIncludingGravity;
+    // 有事件但拿不到数据（某些桌面浏览器一直派发空事件）→ 判定不支持，降级
+    if (!wy_g || (wy_g.x === null && wy_g.y === null && wy_g.z === null)) {
+      wy_enterFallback();
+      return;
+    }
+    wy_sensorOk = true;
+    document.getElementById("wy_authBtn").style.display = "none"; // 收到有效数据后隐藏授权按钮
+    var wy_mag = Math.sqrt(wy_g.x * wy_g.x + wy_g.y * wy_g.y + wy_g.z * wy_g.z); // 合成加速度
+    var wy_now = Date.now();
+    if (wy_mag > 18 && wy_now - wy_lastShake > 1500) { // 阈值18 + 1.5s冷却
+      wy_lastShake = wy_now;
+      wy_showDish();
+      document.getElementById("wy_status").textContent = "检测到摇动！(a=" + wy_mag.toFixed(1) + " m/s²)";
+    }
+  }
+
+  // 功能：请求 iOS 的设备运动权限——必须写在按钮 click 里由用户手势触发（验收③）
+  function wy_requestIosPermission() {
+    if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
+      DeviceMotionEvent.requestPermission()
+        .then(function (wy_res) {
+          if (wy_res === "granted") {
+            window.addEventListener("devicemotion", wy_onDeviceMotion);
+            document.getElementById("wy_status").textContent = "授权成功，摇一摇手机试试！";
+            document.getElementById("wy_authBtn").style.display = "none";
+          } else {
+            document.getElementById("wy_status").textContent = "你拒绝了传感器权限，可点下方按钮抽取";
+            wy_enterFallback();
+          }
+        })
+        .catch(function () { wy_enterFallback(); });
+    }
+  }
+
+  // 功能：降级说明的填充与初始化——绑定事件、判断能力并决定显示哪种入口
+  function wy_init() {
+    // 为什么必须做降级（要求6）：
+    // 1) 台式机、部分平板和模拟器根本没有加速度传感器，devicemotion 的 accelerationIncludingGravity 三个值恒为 null，
+    //    甚至根本不派发事件——不做降级的话页面会永远停在"等待摇动"，作业的验收②直接判不通过；
+    // 2) iOS13+ 出于隐私要求，devicemotion 必须由用户点击按钮申请授权，拒绝授权同样拿不到数据；
+    // 3) 降级的"点我抽一次"按钮保证任何设备上功能(随机抽菜谱)都可用，只是失去了"摇"这个触发方式。
+    document.getElementById("wy_fallbackBtn").addEventListener("click", function () {
+      wy_showDish();
+      document.getElementById("wy_status").textContent = "按钮降级抽取成功！";
+    });
+
+    if (typeof DeviceMotionEvent === "undefined") {
+      // 环境完全没有 devicemotion API（多数电脑浏览器）→ 直接降级，不报错不白屏（验收②）
+      wy_enterFallback();
+    } else if (typeof DeviceMotionEvent.requestPermission === "function") {
+      // iOS13+：先显示授权按钮，等用户点击（验收③）
+      document.getElementById("wy_authBtn").style.display = "inline-block";
+      document.getElementById("wy_authBtn").addEventListener("click", wy_requestIosPermission);
+    } else {
+      // Android/支持设备：直接监听；若 2 秒内一次有效数据都没收到（或全是 null），也走降级
+      window.addEventListener("devicemotion", wy_onDeviceMotion);
+      setTimeout(function () {
+        if (wy_sensorOk === true && document.getElementById("wy_name").textContent === "等待摇动…") {
+          // 不能确定有没有传感器：再等的事件里若数据一直是 null，wy_onDeviceMotion 内部会降级
+          // 这里只处理"事件一次都没来"的情况
+          if (!window.wy_motionFired) { wy_enterFallback(); }
+        }
+      }, 2000);
+      // 用一个标记记录事件是否真的派发过（有些设备不派发 devicemotion）
+      window.addEventListener("devicemotion", function () { window.wy_motionFired = true; }, { once: true });
+    }
+  }
+
+  // 功能：页面加载完成后初始化
+  window.addEventListener("DOMContentLoaded", wy_init);
+</script>
+</body>
+</html>

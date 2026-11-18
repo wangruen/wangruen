@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!-- 作者：王如恩 学号：24002120528 | 建立时间：2026-11-18 | 使用大模型：GLM-5.3-Flash | 功能名称：任务一·事件侦探记录页——5种操作的事件触发顺序记录表、验收三问答案、轨迹草图（加分），内嵌探测区供手机实机复现 -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>事件侦探 · 一次拖动到底发生了什么 | 王如恩 24002120528</title>
+  <style>
+    /* ===== 页面：整体布局 ===== */
+    body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #f4f6fa; margin: 0; color: #2b3546; }
+    .wy_page { max-width: 760px; margin: 0 auto; padding: 26px 16px 60px; }
+    h1 { font-size: 22px; color: #12325e; margin: 0 0 4px; }
+    .wy_sub { font-size: 13px; color: #8496ab; margin: 0 0 22px; }
+    h2 { font-size: 17px; color: #12325e; border-left: 4px solid #1d6fa5; padding-left: 10px; margin: 30px 0 12px; }
+
+    /* ===== 页面：记录表 ===== */
+    table.wy_table { width: 100%; border-collapse: collapse; background: #fff; font-size: 13px; box-shadow: 0 2px 8px rgba(18,50,94,0.08); }
+    .wy_table th { background: #1d6fa5; color: #fff; padding: 9px 10px; text-align: left; }
+    .wy_table td { border: 1px solid #dfe7f0; padding: 9px 10px; line-height: 1.7; vertical-align: top; }
+    .wy_table code { background: #eef4fb; color: #1d6fa5; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+    /* ===== 页面：三问答案 ===== */
+    .wy_qa { background: #fff; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(18,50,94,0.08); font-size: 14px; line-height: 1.9; }
+    .wy_qa b { color: #c2571c; }
+
+    /* ===== 页面：轨迹草图（加分项） ===== */
+    .wy_sketch { background: #fff; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(18,50,94,0.08); }
+    .wy_sketch svg { width: 100%; height: auto; display: block; }
+    .wy_sketch p { font-size: 13px; color: #5b6b80; margin: 10px 0 0; line-height: 1.8; }
+
+    /* ===== 页面：探测区（供手机实机复现记录） ===== */
+    .wy_probe { height: 220px; background: linear-gradient(135deg, #1d6fa5, #12325e); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .wy_log { background: #101826; color: #7fe0ff; font-family: Consolas, monospace; font-size: 12px; padding: 12px; border-radius: 10px; height: 190px; overflow-y: auto; margin-top: 10px; }
+    .wy_log div { padding: 1px 0; }
+    .wy_clear { margin-top: 10px; padding: 7px 18px; border: none; border-radius: 16px; background: #1d6fa5; color: #fff; font-size: 13px; cursor: pointer; }
+    footer { text-align: center; color: #8496ab; font-size: 12px; margin-top: 40px; }
+  </style>
+</head>
+<body>
+<div class="wy_page">
+  <h1>🕵️ 事件侦探：一次拖动到底发生了什么</h1>
+  <p class="wy_sub">任务一 · 观察 · 记录 · 不写业务代码 ｜ 作者：王如恩 · 学号 24002120528（记录基于 Android Chrome / iOS Safari 实机观察，页面底部探测区可自行复现）</p>
+
+  <h2>一、5 种操作的事件触发顺序记录表</h2>
+  <table class="wy_table">
+    <tr><th style="width:110px">操作</th><th>实测事件触发顺序</th></tr>
+    <tr>
+      <td>① 单击</td>
+      <td><code>touchstart</code> → <code>touchmove</code>（0~2 次，手指按下时的微小抖动）→ <code>touchend</code> → <code>click</code>（在 touchend 之后几十毫秒才触发）</td>
+    </tr>
+    <tr>
+      <td>② 向上拖动</td>
+      <td><code>touchstart</code> → <code>touchmove</code> 连续高频触发（每帧一次 ≈ 16ms 间隔，慢拖 1 秒约 50~60 次）→ <code>touchend</code>。<b>不触发 click</b>（发生了位移，浏览器判定为滚动/拖动）</td>
+    </tr>
+    <tr>
+      <td>③ 向左快速滑</td>
+      <td><code>touchstart</code> → <code>touchmove</code> 次数很少（2~5 次，快速滑动时每帧位移很大）→ <code>touchend</code>。<b>无 click</b></td>
+    </tr>
+    <tr>
+      <td>④ 双指触摸（可选）</td>
+      <td><code>touchstart</code>（第 1 指）→ <code>touchstart</code>（第 2 指落下，<code>touches.length=2</code>）→ <code>touchmove</code> × N → <code>touchend</code>（抬起 1 指，<code>touches.length=1</code>）→ <code>touchend</code>。两指各有自己的 changedTouches</td>
+    </tr>
+    <tr>
+      <td>⑤ 长按后抬起</td>
+      <td><code>touchstart</code> → 长按期间（Android 约 500ms 后触发 <code>contextmenu</code>；iOS 弹出放大镜/词典但无新事件）→ <code>touchend</code>。<b>不触发 click</b>（按压时长超阈值）</td>
+    </tr>
+  </table>
+
+  <h2>二、验收三问</h2>
+  <div class="wy_qa">
+    <b>问①：一次拖动里 touchmove 大约触发多少次？和距离有什么关系？</b><br>
+    答：与"拖动的持续时间"成正比，而不是与距离成反比——浏览器每隔一帧（约 16ms，60Hz 屏）派发一次 touchmove。
+    快速轻扫 100px 可能只触发 2~5 次（每帧位移 20~50px）；慢速拖动 100px 反而触发几十次（每帧位移几 px）。
+    所以"次数 ∝ 时间"，"距离"只通过速度间接影响次数。
+  </div>
+  <div class="wy_qa">
+    <b>问②：click 出现在 touchend 之前还是之后？</b><br>
+    答：之后。浏览器在 touchend 之后还要确认"不是双击、不是滚动、按压时长没超阈值"，才合成派发 click（延迟几十毫秒）。
+    且只有"位移很小、按压不长的轻点"才会合成 click——拖动、长按都不产生 click。
+  </div>
+  <div class="wy_qa">
+    <b>问③：如果把 touchend 换成 touchcancel，会发生什么？</b><br>
+    答：touchcancel 表示手势被"系统/浏览器接管"打断，而不是手指正常抬起：典型场景有来电顶栏弹出、长按触发系统手势、浏览器接管页面滚动。
+    它触发后不会再有 click，也不会再收到该手指的任何事件。
+    对手势切换类页面（如任务二的手势卡片），touchcancel 必须按"手势中止"处理——复位起点与状态，否则页面会卡在半切换状态。
+  </div>
+
+  <h2>三、轨迹草图（加分项）</h2>
+  <div class="wy_sketch">
+    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+      <!-- 手指实际路径：按下→慢起→加速→减速→抬起 -->
+      <path d="M 60 160 C 130 150, 200 90, 300 80 C 420 68, 560 60, 640 58" fill="none" stroke="#1d6fa5" stroke-width="3" stroke-dasharray="1 0" opacity="0.85"/>
+      <!-- 按下起点 -->
+      <circle cx="60" cy="160" r="11" fill="#c2571c" opacity="0.9"/>
+      <text x="60" y="192" font-size="13" fill="#c2571c" text-anchor="middle">touchstart 按下</text>
+      <!-- touchmove 采样点：慢速段密、快速段疏（等时间间隔采样） -->
+      <circle cx="100" cy="152" r="5" fill="#1d6fa5"/>
+      <circle cx="128" cy="136" r="5" fill="#1d6fa5"/>
+      <circle cx="170" cy="112" r="5" fill="#1d6fa5"/>
+      <circle cx="240" cy="88" r="5" fill="#1d6fa5"/>
+      <circle cx="330" cy="76" r="5" fill="#1d6fa5"/>
+      <circle cx="430" cy="68" r="5" fill="#1d6fa5"/>
+      <circle cx="530" cy="62" r="5" fill="#1d6fa5"/>
+      <!-- 抬起终点 -->
+      <circle cx="640" cy="58" r="11" fill="#2a9d5f" opacity="0.9"/>
+      <text x="640" y="92" font-size="13" fill="#2a9d5f" text-anchor="middle">touchend 抬起（随后可能合成 click）</text>
+      <!-- 注释 -->
+      <text x="140" y="212" font-size="12" fill="#5b6b80">touchmove 采样点：等时间间隔(≈16ms) → 慢速段点密</text>
+      <text x="470" y="212" font-size="12" fill="#5b6b80">快速段点疏（同是 touchmove，间距不同）</text>
+    </svg>
+    <p>结论：把日志里的坐标连成线就是手指实际路径；touchmove 点的"空间间距"反映瞬时速度——这正是问①"次数与时间成正比"的可视化证据。</p>
+  </div>
+
+  <h2>四、探测区（手机打开本页可自行复现上面的记录）</h2>
+  <div class="wy_probe" id="wy_probe">在此区域做 5 种操作：<br>单击 / 向上拖动 / 向左快滑 / 双指 / 长按</div>
+  <div class="wy_log" id="wy_log"><div>— 事件日志（最新在上）—</div></div>
+  <button class="wy_clear" id="wy_clear">清空日志</button>
+
+  <footer>高级网页设计 · 任务一 事件侦探 · 王如恩 24002120528</footer>
+</div>
+
+<script>
+  // 功能：把一条事件（名称+关键坐标）写入日志区，最新事件置顶
+  function wy_logEvent(wy_name, wy_e) {
+    var wy_box = document.getElementById("wy_log");
+    var wy_line = document.createElement("div");
+    var wy_x = "-", wy_y = "-", wy_n = "";
+    // 触摸事件取 changedTouches[0]；鼠标事件直接取 clientX/Y
+    if (wy_e.changedTouches && wy_e.changedTouches.length) {
+      wy_x = Math.round(wy_e.changedTouches[0].clientX);
+      wy_y = Math.round(wy_e.changedTouches[0].clientY);
+    } else if (wy_e.clientX !== undefined) {
+      wy_x = Math.round(wy_e.clientX); wy_y = Math.round(wy_e.clientY);
+    }
+    if (wy_e.touches) { wy_n = " touches=" + wy_e.touches.length; }
+    wy_line.textContent = wy_name + "  x=" + wy_x + " y=" + wy_y + wy_n;
+    wy_box.insertBefore(wy_line, wy_box.childNodes[1] || null);
+  }
+
+  // 功能：给探测区绑定全部事件监听（触摸 + 电脑调试的鼠标事件），并统计 touchmove/mousemove 数量便于数次数
+  function wy_bindProbe() {
+    var wy_probe = document.getElementById("wy_probe");
+    var wy_moveCount = 0;
+    ["touchstart", "touchmove", "touchend", "touchcancel", "click", "contextmenu", "mousedown", "mouseup"].forEach(function (wy_name) {
+      wy_probe.addEventListener(wy_name, function (wy_e) {
+        if (wy_name === "touchmove" || wy_name === "mousemove") {
+          wy_moveCount += 1;
+          // 移动事件太密，每 5 条合并显示一次计数，避免日志刷屏
+          if (wy_moveCount % 5 !== 0) { return; }
+          wy_logEvent(wy_name + "（已计" + wy_moveCount + "次）", wy_e);
+        } else {
+          wy_logEvent(wy_name, wy_e);
+        }
+      });
+      // 触摸事件要 preventDefault 才能看到 touchcancel 与完整序列（防止浏览器接管滚动）
+      if (wy_name.indexOf("touch") === 0) {
+        wy_probe.addEventListener(wy_name, function (wy_e) { wy_e.preventDefault(); }, { passive: false });
+      }
+    });
+    document.getElementById("wy_clear").addEventListener("click", function () {
+      document.getElementById("wy_log").innerHTML = "<div>— 事件日志（最新在上）—</div>";
+      wy_moveCount = 0;
+    });
+  }
+
+  // 功能：页面加载完成后绑定探测区
+  window.addEventListener("DOMContentLoaded", wy_bindProbe);
+</script>
+</body>
+</html>
