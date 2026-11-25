@@ -145,3 +145,74 @@
 模型: GLM-5.3-Flash
 提示词:
 帮我将第一格视频插入任务三，第二格视频插入任务四。加入后将现在首页的任务三四替换，GitHub的任务三四也替换，并进行发布。（video.mp4 → 任务三 mobile-zoom.html；video(1).mp4 → 任务四 mobile-sensor.html）
+
+===== 2026-11-20 13:40 左右（补记于 13:48） =====
+模型: GLM-5.3-Flash
+提示词:
+在当前项目根目录创建 AGENTS.md，写入以下规则：项目结构与技术栈（frontend/ 原生 HTML、CSS、JavaScript，禁止第三方库、框架、CDN；backend/ Node.js + Express，RESTful+MVC，接口 /api/ 前缀，端口 8528；express.static 托管 frontend；cors 开放全部跨域；npm 国内镜像；MySQL 数据库，凭据写入 backend/.env，不得出现在代码或 AGENTS.md，.env 加入 .gitignore；每张表插入至少 8 条有真实业务意义的测试数据）| 命名与注释（CSS 类名、JS 变量名、JS 函数名、数据库表名一律以 wrn_ 开头；每个文件头部包含注释块：姓名【王如恩】| 学号【24002120528】| 时间 | 大模型）| 记录文件（wangyao_prompt.md、backend/wy_interface.md、backend/wy_database.md，一律追加写入禁止覆盖；统一 JSON 响应格式 { code, msg, data }，code=0 成功）| 前端约定（服务器返回的数据和错误输出到浏览器控制台；新建 HTML 页面后在 frontend/index.html 追加超链接入口，文件名含 detail 的页面除外）
+
+===== 2026-11-20 13:48:25 =====
+模型: GLM-5.3-Flash
+提示词:
+`d:/Python/高级网页/wbporojectwangruen/24002120528-王如恩/24002120528-王如恩.txt`帮我将所有的提示词输入文件中，包括上一句，以及接下来所有的提示词。
+（说明：自本条起，所有提示词继续以追加方式写入本文件；同时按 AGENTS.md 规则写入根目录 wangyao_prompt.md）
+
+===== 2026-11-20 14:13:53 =====
+模型: GLM-5.3-Flash
+提示词:
+设置规则： 所有的提示词都在执行之前写入文件`d:/Python/高级网页/wbporojectwangruen/24002120528-王如恩/24002120528-王如恩.txt`，以附加的方式写入，不覆盖之前的内容，写入的内容包括时间、使用的模型、提示词内容。
+
+===== 2026-11-20 14:40:46 =====
+模型: GLM-5.3-Flash
+提示词:
+创建 database.html 页面，输入用户名，密码，链接数据库，数据库使用 mysql，成功和错误都有提示，默认用户名 root，密码 Root@123。
+
+===== 2026-11-20 14:47:48 =====
+模型: GLM-5.3-Flash
+提示词:
+完成科技新闻列表页面，新闻的数据存在数据库表里。网页显示后端接口链接和数据内容。
+
+===== 2026-11-20 14:51:48 =====
+模型: GLM-5.3-Flash
+提示词:
+完成图文列表，图片可以使用网络图片或创建图片，创建一个新的表，网页显示后端接口链接和数据内容。
+
+===== 2026-11-20 15:01:23 =====
+模型: GLM-5.3-Flash
+提示词:
+给我链接
+
+===== 2026-11-20 15:06:01 =====
+模型: GLM-5.3-Flash
+提示词:
+按照这张图片的结构修改图文列表，并且给图文列表增加图片（图片：24002120625+冀佳宁+全栈截图.png）
+
+===== 2026-11-25 14:02:10 =====
+模型: GLM-5.3-Flash
+提示词:
+使用硅基流动API key创建基本AI应用:AI聊天
+Api-key：sk-jzsxjdcxewlwpqlmsquxrchxsydpotxkspmimkxpnmaxnsfc
+
+===== 2026-11-25 14:10:44 =====
+模型: GLM-5.3-Flash
+提示词:
+按照日期写，写到11月20日之后，以后所有提示词按日期排列。
+（说明：已将 11-20 之后的记录按时间顺序重排，11-25 两条现位于 11-20 15:06:01 之后；此后追加的提示词若时间早于文件末尾记录，将插入到正确日期位置，保持全文件按日期升序）
+
+===== 2026-11-25 14:15:02 =====
+模型: GLM-5.3-Flash
+提示词:
+（粘贴 .env 配置内容：硅基流动 SILICONFLOW_API_KEY / SILICONFLOW_BASE_URL=https://api.siliconflow.cn/v1 / SILICONFLOW_MODEL=Qwen/Qwen2.5-7B-Instruct / SILICONFLOW_VISION_MODEL=Qwen/Qwen3-VL-8B-Instruct / AI_PROVIDER=siliconflow；七牛客服 QINIU_CUSTOMER_SERVICE_BASE_URL=https://api.qnaigc.com/v1 / QINIU_CUSTOMER_SERVICE_MODEL=qiniu/conatus-free / QINIU_CUSTOMER_SERVICE_API_KEY=sk-a44f***）
+（处理说明：已创建项目根目录 .env 保存配置（URL 去除粘贴时带入的反引号），并把 .env 加入 .gitignore 防止密钥提交到 GitHub）
+
+===== 2026-11-25 14:21:22 =====
+模型: GLM-5.3-Flash
+提示词:
+使用硅基流动 完成在线客服页面：
+（提示词以冒号结尾疑似未发完；先行实现：电商在线客服聊天页 在线客服.html，硅基流动 Qwen2.5-7B 驱动，客服人设 system 提示词 + 常见问题快捷入口，待用户补充截图/要求后再调整）
+
+===== 2026-11-25 14:24:32 =====
+模型: GLM-5.3-Flash
+提示词:
+帮我加一个首页入口
+（说明：为 在线客服.html 在 index.html 课堂模块中新增入口链接）

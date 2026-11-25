@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!-- 作者：王如恩 | 建立时间：2026-11-25 | 使用大模型：GLM-5.3-Flash | 功能名称：AI聊天应用（硅基流动 SiliconFlow API，多轮对话） -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 聊天 · 王如恩 24002120528</title>
+  <style>
+    /* ===== 页面：整体布局 ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: linear-gradient(180deg, #141a26, #0d1220); min-height: 100vh; color: #eef2f7; display: flex; justify-content: center; padding: 20px 12px; }
+    .wre_app { width: 100%; max-width: 680px; display: flex; flex-direction: column; height: calc(100vh - 40px); }
+
+    /* ===== 页面：头部 ===== */
+    .wre_header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(255,255,255,0.05); border-radius: 14px 14px 0 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .wre_header h1 { font-size: 18px; }
+    .wre_header .wre_sub { font-size: 12px; color: #8fa0b8; margin-top: 2px; }
+    .wre_clearBtn { padding: 6px 14px; border: none; border-radius: 16px; background: #2a3548; color: #cfe0f5; font-size: 13px; cursor: pointer; }
+    .wre_clearBtn:hover { background: #35425c; }
+
+    /* ===== 页面：消息区 ===== */
+    .wre_chatBox { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; background: rgba(255,255,255,0.03); }
+    .wre_msg { max-width: 82%; padding: 10px 14px; border-radius: 14px; line-height: 1.7; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+    .wre_msg_user { align-self: flex-end; background: linear-gradient(135deg, #2f6fdb, #2456b8); border-bottom-right-radius: 4px; }
+    .wre_msg_ai { align-self: flex-start; background: #232c3d; border-bottom-left-radius: 4px; }
+    .wre_msg_err { align-self: flex-start; background: #4a2530; color: #ffb3c0; border-bottom-left-radius: 4px; }
+    .wre_msg_role { font-size: 11px; opacity: 0.65; margin-bottom: 4px; }
+    .wre_thinking { align-self: flex-start; color: #8fa0b8; font-size: 13px; padding: 6px 2px; }
+    .wre_thinking::after { content: "…"; animation: wre_blink 1s infinite; }
+    @keyframes wre_blink { 50% { opacity: 0.2; } }
+
+    /* ===== 页面：输入区 ===== */
+    .wre_inputBar { display: flex; gap: 10px; padding: 14px 18px; background: rgba(255,255,255,0.05); border-radius: 0 0 14px 14px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .wre_input { flex: 1; padding: 11px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #1a2230; color: #eef2f7; font-size: 14px; outline: none; resize: none; font-family: inherit; }
+    .wre_input:focus { border-color: #2f6fdb; }
+    .wre_sendBtn { padding: 0 22px; border: none; border-radius: 10px; background: linear-gradient(135deg, #2f6fdb, #2456b8); color: #fff; font-size: 14px; cursor: pointer; }
+    .wre_sendBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ===== 页面：底部说明 ===== */
+    .wre_foot { text-align: center; font-size: 12px; color: #6d7d95; padding: 10px 0 0; }
+  </style>
+</head>
+<body>
+<div class="wre_app">
+  <!-- 头部：标题与清空对话按钮 -->
+  <div class="wre_header">
+    <div>
+      <h1>💬 AI 聊天</h1>
+      <div class="wre_sub">硅基流动 SiliconFlow · Qwen2.5-7B · 作者：王如恩 24002120528</div>
+    </div>
+    <button class="wre_clearBtn" id="wre_clearBtn">清空对话</button>
+  </div>
+
+  <!-- 消息区：聊天记录 -->
+  <div class="wre_chatBox" id="wre_chatBox"></div>
+
+  <!-- 输入区：输入框 + 发送按钮（Ctrl+Enter 或点击发送） -->
+  <div class="wre_inputBar">
+    <textarea class="wre_input" id="wre_input" rows="2" placeholder="输入消息…（Enter 发送，Shift+Enter 换行）"></textarea>
+    <button class="wre_sendBtn" id="wre_sendBtn">发送</button>
+  </div>
+  <div class="wre_foot">高级网页设计 · 基本AI应用 · 调用 api.siliconflow.cn 接口</div>
+</div>
+
+<script>
+  // ===== 配置：硅基流动接口与模型 =====
+  var wre_apiUrl = "https://api.siliconflow.cn/v1/chat/completions";
+  var wre_apiKey = "sk-jzsxjdcxewlwpqlmsquxrchxsydpotxkspmimkxpnmaxnsfc";
+  var wre_model = "Qwen/Qwen2.5-7B-Instruct";
+  var wre_systemPrompt = "你是一个友好、简洁的中文AI助手，回答控制在合理长度。";
+
+  // ===== 状态：多轮对话消息数组（含 system），发送时整体传给接口 =====
+  var wre_messages = [{ role: "system", content: wre_systemPrompt }];
+  var wre_sending = false; // 防止重复发送
+
+  // 功能：把一条消息渲染成气泡并追加到聊天区（role 决定样式与署名）
+  function wre_addBubble(wre_role, wre_text) {
+    var wre_box = document.getElementById("wre_chatBox");
+    var wre_div = document.createElement("div");
+    var wre_names = { user: "我", assistant: "AI", err: "系统提示" };
+    wre_div.className = "wre_msg wre_msg_" + wre_role;
+    var wre_head = '<div class="wre_msg_role">' + wre_names[wre_role] + "</div>";
+    wre_div.innerHTML = wre_head;
+    wre_div.appendChild(document.createTextNode(wre_text)); // textNode 防止把回复当 HTML 注入
+    wre_box.appendChild(wre_div);
+    wre_box.scrollTop = wre_box.scrollHeight; // 自动滚到最新消息
+    return wre_div;
+  }
+
+  // 功能：调用硅基流动接口，把 AI 回复渲染出来；失败时给出友好错误提示（不白屏）
+  function wre_sendMessage(wre_text) {
+    wre_sending = true;
+    document.getElementById("wre_sendBtn").disabled = true;
+    wre_addBubble("user", wre_text);
+    wre_messages.push({ role: "user", content: wre_text });
+    var wre_think = wre_addBubble("assistant", "思考中");
+    var wre_thinkNode = wre_think.lastChild; // "思考中"占位，稍后替换文本
+
+    fetch(wre_apiUrl, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + wre_apiKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: wre_model,
+        messages: wre_messages,
+        temperature: 0.7,
+        max_tokens: 1024
+      })
+    })
+      .then(function (wre_res) {
+        if (!wre_res.ok) { throw new Error("接口返回 " + wre_res.status); }
+        return wre_res.json();
+      })
+      .then(function (wre_data) {
+        console.log("服务器返回数据：", wre_data); // 按课堂约定：服务器返回数据输出到控制台
+        var wre_reply = wre_data.choices[0].message.content;
+        wre_thinkNode.textContent = ""; // 去掉"思考中"占位文字
+        wre_think.lastChild.textContent = wre_reply;
+        wre_messages.push({ role: "assistant", content: wre_reply }); // 加入上下文，支持多轮对话
+      })
+      .catch(function (wre_err) {
+        console.log("请求出错：", wre_err); // 错误也输出到控制台
+        wre_think.remove(); // 移除"思考中"占位
+        wre_addBubble("err", "请求失败：" + wre_err.message + "（请检查网络或稍后再试）");
+      })
+      .finally(function () {
+        wre_sending = false;
+        document.getElementById("wre_sendBtn").disabled = false;
+        document.getElementById("wre_input").focus();
+      });
+  }
+
+  // 功能：发送入口——读取输入框内容，空消息不发，发送后清空输入框
+  function wre_doSend() {
+    if (wre_sending) { return; } // 正在等待回复时不重复发送
+    var wre_input = document.getElementById("wre_input");
+    var wre_text = wre_input.value.trim();
+    if (!wre_text) { return; }
+    wre_input.value = "";
+    wre_sendMessage(wre_text);
+  }
+
+  // 功能：清空对话——重置消息数组（保留 system）与聊天区
+  function wre_clearChat() {
+    wre_messages = [{ role: "system", content: wre_systemPrompt }];
+    document.getElementById("wre_chatBox").innerHTML = "";
+  }
+
+  // 功能：初始化——绑定发送按钮、清空按钮、键盘事件（Enter 发送 / Shift+Enter 换行）
+  function wre_init() {
+    document.getElementById("wre_sendBtn").addEventListener("click", wre_doSend);
+    document.getElementById("wre_clearBtn").addEventListener("click", wre_clearChat);
+    document.getElementById("wre_input").addEventListener("keydown", function (wre_e) {
+      if (wre_e.key === "Enter" && !wre_e.shiftKey) {
+        wre_e.preventDefault(); // 阻止 textarea 默认换行
+        wre_doSend();
+      }
+    });
+    // 欢迎语
+    wre_addBubble("assistant", "你好！我是 AI 助手，有什么可以帮你？😊");
+  }
+
+  // 功能：页面加载完成后初始化
+  window.addEventListener("DOMContentLoaded", wre_init);
+</script>
+</body>
+</html>

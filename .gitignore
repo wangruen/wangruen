@@ -1,0 +1,5 @@
+# 密钥与环境配置，禁止提交到 GitHub
+.env
+
+# IDE 共享缓存
+.trae-html-share-packages/
