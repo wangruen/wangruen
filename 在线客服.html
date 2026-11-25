@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>在线客服 · 王如恩 24002120528</title>
+  <title>美食街在线客服 · 王如恩 24002120528</title>
   <style>
     /* ===== 页面：整体布局 ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -51,7 +51,7 @@
   <div class="wre_header">
     <div class="wre_avatar">👩‍💼</div>
     <div class="wre_info">
-      <h1>小惠 · 官方客服</h1>
+      <h1>小美 · 美食街客服</h1>
       <p>● 在线 · 平均回复 3 秒</p>
     </div>
     <div class="wre_badge">AI 客服 · 硅基流动驱动</div>
@@ -68,7 +68,7 @@
     <textarea class="wre_input" id="wre_input" rows="2" placeholder="请描述您的问题…（Enter 发送，Shift+Enter 换行）"></textarea>
     <button class="wre_sendBtn" id="wre_sendBtn">发送</button>
   </div>
-  <div class="wre_foot">高级网页设计 · 在线客服页面 · 调用 api.siliconflow.cn 接口 · 王如恩 24002120528</div>
+  <div class="wre_foot">高级网页设计 · 美食街在线客服页面 · 调用 api.siliconflow.cn 接口 · 王如恩 24002120528</div>
 </div>
 
 <script>
@@ -77,11 +77,11 @@
   var wre_apiKey = "sk-jzsxjdcxewlwpqlmsquxrchxsydpotxkspmimkxpnmaxnsfc";
   var wre_model = "Qwen/Qwen2.5-7B-Instruct";
 
-  // 客服人设：system 提示词决定 AI 以"小惠"身份按客服话术回答
-  var wre_systemPrompt = "你是电商平台\"惠购商城\"的在线客服，名叫小惠，语气亲切热情、简洁专业。你负责解答：订单物流（下单后48小时内发货，快递3-5天到达）、退换货（签收7天内可退换，运费险自动赔付）、优惠活动（每日9点领券满100减20，新客立减15）、支付问题（支持微信/支付宝/货到付款）等。超出业务范围的问题礼貌引导用户联系人工客服（工作时间9:00-22:00）。每次回答不超过120字，分点说明。";
+  // 客服人设：system 提示词决定 AI 以"小美"身份按美食街客服话术回答
+  var wre_systemPrompt = "你是\"美食街\"（汇聚全国各地特色小吃的餐饮街区）的在线客服，名叫小美，语气亲切热情、简洁专业。你负责解答：营业时间（每天10:00-22:00，节假日不休息）、外卖配送（3公里内30分钟送达，满39元免配送费）、优惠活动（充值100送20，周二会员日全场8.8折）、排队预约（周末高峰期可在小程序在线取号，到号前10分钟提醒）、推荐菜品（川渝麻辣烫、广式肠粉、长沙臭豆腐等）等。超出业务范围的问题礼貌引导用户联系人工客服（工作时间9:00-22:00）。每次回答不超过120字，分点说明。";
 
   // ===== 常见问题快捷入口数据 =====
-  var wre_faqList = ["我的订单什么时候发货？", "怎么申请退货？", "有什么优惠活动？", "支持哪些付款方式？", "转人工客服"];
+  var wre_faqList = ["你们营业到几点？", "外卖怎么收费？", "有什么优惠活动？", "可以提前排队取号吗？", "转人工客服"];
 
   // ===== 状态：多轮对话消息数组（含 system 人设） =====
   var wre_messages = [{ role: "system", content: wre_systemPrompt }];
@@ -91,7 +91,7 @@
   function wre_addBubble(wre_role, wre_text) {
     var wre_box = document.getElementById("wre_chatBox");
     var wre_div = document.createElement("div");
-    var wre_names = { user: "我", assistant: "客服小惠", err: "系统提示" };
+    var wre_names = { user: "我", assistant: "客服小美", err: "系统提示" };
     wre_div.className = "wre_msg wre_msg_" + wre_role;
     var wre_head = '<div class="wre_msg_role">' + wre_names[wre_role] + "</div>";
     wre_div.innerHTML = wre_head;
@@ -181,7 +181,7 @@
     });
     wre_renderFaq();
     // 客服欢迎语（本地渲染，不消耗接口调用）
-    wre_addBubble("assistant", "您好，我是惠购商城客服小惠 😊\n关于订单、退换货、优惠活动的问题都可以问我，也可以点击下方常见问题快速提问～");
+    wre_addBubble("assistant", "您好，我是美食街客服小美 😊\n关于营业时间、外卖配送、优惠活动、排队取号的问题都可以问我，也可以点击下方常见问题快速提问～");
   }
 
   // 功能：页面加载完成后初始化
